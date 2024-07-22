@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<!--contiene los fragmento del menu superior-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:fragment="head">
+        <!--<link rel="icon" th:href="@{/imagenes/icono.png}" type="image/png">-->
+        <title>EatAway</title>
+        <meta charset="UTF-8">
+        <link th:href="@{/css/menu.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/css/estilos.css}" rel="stylesheet" type="text/css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/rutinas.js}"></script>
+    </head>
+    <body >        
+        
+        <section th:fragment="menuSuperiorInicio" class="header">
+            <section class="navbar navbar-expand-sm navbar-light bg-white p-0">
+                <div class="container">
+                    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <ul></ul>
+                        <ul class="navbar-nav ml-auto mr-0"> 
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Lang</a>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item" th:href="@{/(lang=es)}">ES</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/(lang=en)}">EN</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>            
+            <nav class="navbar navbar-expand-sm py-2 bg-white menu-superior">
+                <div class="container">
+                    <a th:href="@{/}" class="navbar-brand">
+                        <h1 class="titulologo">
+                            <img th:src="@{/imagenes/logo.jpg}" alt="Logo" style="width: 60px; height: 60px; margin-right: 10px; border-radius: 50%;">
+                                [[#{plantilla.nombreAplicacion}]]
+                        </h1>
+                    </a>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <ul></ul>
+                        <ul class="navbar-nav">
+                            <button sec:authorize="!isAuthenticated()" type="button" class="btn" style="background-color: #F26535 ; color: white; border-radius: 25px;">
+                                <a th:href="@{/registro/nuevo}" class="btn text-white">[[#{login.nuevaCuenta}]]</a>
+                            </button>
+                            <a>ㅤ</a>
+                            <button sec:authorize="!isAuthenticated()" type="button" class="btn" style="background-color: gray; color: white; border-radius: 25px;"
+                                    data-bs-toggle="modal" data-bs-target="#iniciaCuenta">
+                                    [[#{login.iniciaSesion}]]
+                            </button>
+                            <a>ㅤ</a>
+                            <a sec:authorize="isAuthenticated()" th:href="@{/transporte}" class="btn" style="background-color: #F26535; color: white; border-radius: 25px; width: 200px;">
+                                [[#{sesion.opcionesTransporte}]]
+                            </a>
+                             <a>ㅤ</a>
+                            <a sec:authorize="isAuthenticated()" th:href="@{/eventos}" class="btn" style="background-color: #F26535; color: white; border-radius: 25px; width: 200px;">
+                                [[#{sesion.eventos}]]                                
+                            </a>                             
+                            <a>ㅤ</a>
+                            <div sec:authorize="isAuthenticated()" class="user-bubble p-2 rounded bg-light">
+                                <h10>[[#{login.username}]]:</h10>
+                                <h10  class="text-dark" sec:authentication="name"></h10>
+                            </div>
+                            <a>ㅤ</a>
+                            <div class="dropdown" sec:authorize="isAuthenticated()">
+                                <button class="btn btn-secondary" style="background-color: gray; color: white; border-radius: 25px;" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bars"></i> <!-- Icono de menú hamburguesa de Font Awesome -->
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end mt-3" aria-labelledby="dropdownMenu2">
+                                    <li><a th:href="@{/reservas}" class="dropdown-item" type="button">[[#{dropdown.reservas}]]</a></li>
+                                    <li><a th:href="@{/resenas}" class="dropdown-item" type="button">[[#{dropdown.resenas}]]</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a th:href="@{/usuario/modificar/}+${session.idU}" class="dropdown-item" type="button">[[#{dropdown.cuenta}]]</a></li>
+                                    <li><a th:href="@{/centroAyuda}" class="dropdown-item" type="button">[[#{dropdown.ayuda}]]</a></li>                                   
+                                    <li>
+                                        <!-- Agrega un formulario para el botón de cerrar sesión -->
+                                        <form method="post" th:action="@{/logout}" class="p-0 m-0">
+                                            <button class="dropdown-item" type="submit">[[#{dropdown.cerrar}]]</button>
+                                        </form>
+                                    </li>                                    
+                                </ul>
+                            </div>
+                        </ul>                     
+                    </div>
+                </div>
+            </nav>
+        </section>
+       
+        <footer th:fragment="footer" class="bg-black text-white mt-5 p-2" id="piePagina">
+            <div class="container">
+                <div class="col">
+                    <p class="lead text-center">
+                        &COPY; [[#{plantilla.derechos}]]
+                    </p>
+                </div>
+            </div>
+        </footer>
+        
+        <!--Aqui se encuentran los modales-->
+        
+        
+        <!--Ventana Modal para crear una cuenta-->
+        <section th:fragment="hazteUnaCuenta">               
+            <div id="nuevaCuenta" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header text-dark menu-superior">
+                            <h5 class="modal-title">[[#{login.nuevaCuenta}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/guardar}" th:object="${usuario}" method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nombre">[[#{login.nombre}]]</label>
+                                    <input type="text" class="form-control" name="nombre" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="priApellido">[[#{login.apellido1}]]</label>
+                                    <input type="text" class="form-control" name="priApellido" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="segApellido">[[#{login.apellido2}]]</label>
+                                    <input type="text" class="form-control" name="segApellido" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="correo">[[#{login.login}]]</label>
+                                    <input type="text" class="form-control" name="correo" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password">[[#{login.password}]]</label>
+                                    <input type="password" class="form-control" name="password" required="true" autocomplete="current-password">
+                                </div>
+                                <div class="mb-3">
+                                    <!-- Campo oculto para los campos que no deseas que el usuario complete -->
+                                    <input type="hidden" name="username" value="" />
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="direccion" value="" />
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="presentacion" value="" />
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="fotoPerfil" value="" />
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="activo" value="true" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="fotoPerfil">[[#{login.foto}]]</label>
+                                    <input type="file" class="form-control" id="imagenFile" name="imagenFile" accept="image/*" />
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button class="boton-personalizado" type="submit">[[#{accion.guardar}]]</button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>            
+        </section>
+        <!-- *FIN* Ventana Modal para crear una cuenta-->
+        
+        <!-- Ventana Modal para iniciar sesión -->
+        <section th:fragment="iniciaCuenta">               
+            <div id="iniciaCuenta" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header text-dark menu-superior">
+                            <h5 class="modal-title">[[#{login.iniciaSesion}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form method="POST" th:action="@{/}">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="username">[[#{login.username}]]</label>
+                                    <input class="form-control" type="text" name="username" id="username"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password">[[#{login.password}]]</label>
+                                    <input class="form-control" type="password" name="password" id="password">
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button class="boton-personalizado" type="submit">[[#{accion.guardar}]]</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>                
+            </div>            
+        </section>
+        <!-- *FIN* Ventana Modal para iniciar sesión -->
+        
+    </body>
+</html>

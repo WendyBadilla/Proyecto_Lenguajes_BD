@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<!--contiene los fragmento de inicio o sea: filtros de busqueda y los cards de la informacion de cada local -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{sinCuenta/plantilla :: head}">
+        <title>EatAway</title>
+    </head>
+    <body>
+        
+        <!-- Esto contiene la seccion lateral izquierda donde estan los filtros de busqueda -->
+        <section th:fragment="seccionFiltros" >
+            <aside id="barralateral">
+                <!-- Campo de texto para buscar (filtro) -->
+                <input type="text" placeholder="Buscar..." style="border-radius: 10px; padding: 2px; width: 100%;">
+                <br>
+                <!-- Filtro 1 -->
+                <h6>[[#{filtro.tipo}]]</h6>
+                <label>
+                    <input type="checkbox" name="tipoEstablecimiento" value="bares" onchange="cambiarFiltro()"> [[#{filtro.bares}]]
+                </label>
+                <label>
+                    <input type="checkbox" name="tipoEstablecimiento" value="restaurantes" onchange="cambiarFiltro()"> [[#{filtro.restaurante}]]
+                </label>
+            </aside>            
+        </section>
+        
+        <!-- Esto contiene la seccion lateral derecha donde estan los cards con la info de los locales -->
+        <section th:fragment="cardsLocal">
+            <section id="contenido">
+                <div id="cardsContainer">
+                <div class="row">
+                    <div th:each="local : ${locales}" class="col-md-4 mb-3">
+                        <div class="card rounded mb-4" style="max-width: 18rem;">
+                            <img id="blah" th:src="@{${local.foto}}" alt="your image" class="card-image" />
+                            <div class="card-body">
+                                <h5 class="card-title nombreFuente" th:text="${local.nombre}"></h5>
+                                <p class="card-text my-1" style="font-style: italic; opacity: 0.7;">
+                                    <span th:text="${local.tipoCategoria}"></span>
+                                </p>
+                                <p class="card-text my-1" style="font-style: italic; opacity: 0.7;">
+                                    <span th:text="${local.descripcion}"></span>
+                                </p>
+                            </div>
+                            <div sec:authorize="isAuthenticated()" class="text-center" style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">
+                                <a th:href="@{/detalle/}+${local.idLocal}" class="btn" style="background-color: #000000; color: white; border-radius: 50px;">
+                                    [[#{card.verMas}]]
+                                </a>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+            </section>
+        </section>
+        
+    </body>
+</html>

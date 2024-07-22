@@ -1,0 +1,222 @@
+
+body {
+    background-color: black; /* Cambia #ffcc00 al color que desees */
+}
+
+#barralateral{
+    position: absolute;
+    height: 95%;
+    top: 30%;
+    left: 3%;
+    width: 20%;
+    background-color: #F5F5F5;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-radius: 10px; /* Redondea los bordes */
+}
+
+
+#contenido{
+    position: absolute;
+    height: 155%;
+    top: 30%;
+    left: 25%;    
+    width: 73%;
+    background-color: white;
+    padding: 10px;
+}
+
+#piePagina{
+    position: absolute  ;
+    top: 170%;
+    height: 9%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #818181;
+    text-align: center;
+    padding: 5px;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.boton-personalizado {
+    background-color: black;
+    color: white;
+    border-radius: 50px; /* Redondea los bordes */
+    border: 1px solid black; /* color de los bordes */
+    width: 60%; /* ancho  */
+}
+
+.boton-personalizado:hover {
+    background-color: white; /* Fondo blanco en hover */
+    color: black; /* Texto negro en hover */
+    border: 1px solid black; /* Borde negro en hover */
+}
+
+.card-image {
+    max-height: 200px; /* altura máxima para las imágenes */
+    width: 100%; /* ocupa el ancho completo del card */
+    object-fit: cover;
+    border-top-left-radius: 5px; 
+    border-top-right-radius: 5px;
+}
+
+.nombreFuente{
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 35px;
+    color: black;
+}
+
+.contenedor {
+  display: grid;
+  grid-template-columns: fr 2fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "derecha izquierda";
+}
+
+.derecha {
+  grid-area: derecha;    
+  margin-left: 90px;
+  margin-top: 60px;
+}
+
+.izquierda {
+  grid-area: izquierda;
+  margin-top: 25%;
+  margin-left: 30%;
+}
+
+.comment {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.comment-autor {
+    font-weight: bold;
+    color: #333;
+}
+
+.comment-texto {
+    margin-top: 10px;
+    color: #555;
+}
+
+.evento-container {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.imagen-evento {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 200px;
+    margin-right: 50px;
+}
+
+.imagen-evento img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5%;
+}
+
+.detalles-evento {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.detalles-adicionales {
+    flex: 1; /* Ocupa el espacio restante en el contenedor de detalles */
+}
+
+.ml-auto {
+    margin-left: 70%; /* Mueve el botón a la derecha dentro de su contenedor */
+    margin-top: -10px;
+}
+
+fieldset {
+    margin-bottom: 20px;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.foto {
+    width: 35px; /* Ajusta el ancho según tus necesidades */
+    height: 35px; /* Ajusta la altura según tus necesidades */
+    border-radius: 50%;
+    overflow: hidden;
+}
+/*++++++++++++++++++++++++*/
+/*para los elemntos de tipo id (especificos)*/
+/*#encabezado{
+    color: blueviolet;
+    font-weight: bold;
+}*/
+
+/*las class son para varios elementos*/
+/*.parrafosCentrados{
+    text-align: center;
+    font-weight: bold;
+    color: slategrey;
+}*/
+
+/*.textoVerde{
+    color: greenyellow;
+}
+
+p, h1, span{
+    color:blue;
+}
+
+a:link{
+    background-color: green;
+    color: white;
+}
+
+a:visited{
+    background-color: violet;
+    color: white;
+}
+
+a:hover{
+    background-color: darkblue;
+    color: white;
+}
+
+a:active{
+    background-color: red;
+    color: white;
+}
+
+p:nth-child(odd){
+    background-color: darksalmon;
+}
+
+p:nth-child(even){
+    background-color: cadetblue;
+}*/
+
+/*
+*{
+    background-color: black;
+}
+*/
+

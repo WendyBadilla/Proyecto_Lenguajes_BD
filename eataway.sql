@@ -13,10 +13,8 @@ GRANT CONNECT TO C##eataway;
 GRANT ALL PRIVILEGES TO C##eataway;
 
 -----------------------------------------------
-
+--CREACION DE LAS TABLAS--
 -------------------------------------------------
-
---Creacón de las tablas
 
 -- Tabla Categoría
 CREATE TABLE Categoria (
@@ -121,9 +119,9 @@ CREATE TABLE Ubicacion (
     UNIQUE (id_local, id_ubicacion)  -- Asegura combinaciones únicas de local y ubicación
 );
 
---------------------------------------------
-
---Inserts
+---------------------------------------------------
+--INSERTs PARA PRUEBAS--
+---------------------------------------------------
 
 -- Insertar en Categoría
 INSERT INTO Categoria (tipo) VALUES ('Restaurante');
@@ -164,10 +162,11 @@ INSERT INTO Promociones (id_local, nombre, descripcion, fecha_inicio, fecha_fin,
 -- Insertar en Ubicación
 INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (1, 'San José', 'Av. 7, Barrio Escalante');
 INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (2, 'Cartago', '1500 metros de la iglesia católica del barrio San José');
+INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (2, 'Alajuela', '1500 metros de la iglesia católica del barrio San José');
 
 -----------------------------------
 
-SELECT * FROM Ubicacion;
+SELECT * FROM Ubicacion WHERE id_local = 2;
 SELECT * FROM Categoria;
 SELECT * FROM Usuarios;
 SELECT * FROM Locales;
@@ -191,6 +190,8 @@ DROP TABLE Categoria CASCADE CONSTRAINTS;
 DROP TABLE Usuarios CASCADE CONSTRAINTS;
 DROP TABLE Ubicacion CASCADE CONSTRAINTS;
 
+---------------------------------------------------
+--PROCEDIMEINTOS ALMACENADOS--
 ---------------------------------------------------
 
 --SP para obtener todos los locales
@@ -227,3 +228,227 @@ BEGIN
 END;
 
 ---------------------------------------------------
+
+--Sp para obtener usuarios
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerUsuariosSP(p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_usuario, username, nombre, primer_apellido, segundo_apellido, correo, foto
+    FROM C##eataway.Usuarios;
+END;
+
+---------------------------------------------------
+
+--Obtener Reservas por Usuario (id_usuario)
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerReservasPorUsuarioSP(p_usuario_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT r.id_reserva, r.id_local, l.nombre AS local_nombre, r.fecha, r.hora, r.numero_personas, r.descripcion
+    FROM C##eataway.Reservas r
+    JOIN C##eataway.Locales l ON r.id_local = l.id_local
+    WHERE r.id_usuario = p_usuario_id;
+END;
+
+---------------------------------------------------
+
+--Obtener reseñas por local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT r.id_resena, r.id_usuario, u.nombre || ' ' || u.primer_apellido AS usuario_nombre, r.calificacion, r.comentario
+    FROM C##eataway.Resenas r
+    JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
+    WHERE r.id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Eventos Especiales por Local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerEventosEspecialesPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_evento, nombre_evento, descripcion, fecha_evento, hora_evento
+    FROM C##eataway.EventosEspeciales
+    WHERE id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Promociones Activas
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerPromocionesActivasSP(p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_promocion, id_local, nombre, descripcion, fecha_inicio, fecha_fin
+    FROM C##eataway.Promociones
+    WHERE estado = 'Activa' AND fecha_fin >= SYSDATE;
+END;
+
+
+---------------------------------------------------
+
+--Obtener locales por Categoria
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerLocalesPorNombreCategoriaSP(p_categoria_nombre VARCHAR2, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT l.id_local, l.nombre, l.descripcion, c.tipo AS tipo
+    FROM C##eataway.Locales l
+    JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria
+    WHERE c.tipo = p_categoria_nombre;
+END;
+
+---------------------------------------------------
+
+--Obtener Fotos de un Local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerFotosDeLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_foto, ruta_foto
+    FROM C##eataway.Fotos
+    WHERE id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Número de Reservas por Local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerNumeroReservasPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT COUNT(*) AS numero_reservas
+    FROM C##eataway.Reservas
+    WHERE id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Reseñas por Usuario
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorUsuarioSP(p_usuario_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT r.id_resena, r.id_local, l.nombre AS local_nombre, r.calificacion, r.comentario
+    FROM C##eataway.Resenas r
+    JOIN C##eataway.Locales l ON r.id_local = l.id_local
+    WHERE r.id_usuario = p_usuario_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Promociones por Local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerPromocionesPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_promocion, nombre, descripcion, fecha_inicio, fecha_fin, estado
+    FROM C##eataway.Promociones
+    WHERE id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Ubicación y Contacto de los Locales
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerUbicacionYContactoPorLocalSP(
+  p_local_id NUMBER, 
+  p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT 
+      l.id_local, 
+      l.nombre AS local_nombre,
+      u.provincia, 
+      u.direccion,
+      c.telefono,
+      c.email,
+      c.instagram
+    FROM C##eataway.Locales l
+    JOIN C##eataway.Ubicacion u ON l.id_local = u.id_local
+    LEFT JOIN C##eataway.Contactos c ON l.id_local = c.id_local
+    WHERE l.id_local = p_local_id;
+END;
+
+---------------------------------------------------
+
+--Obtener Todas las Ubicaciones de un Local
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerTodasUbicacionesPorLocalSP(
+  p_local_id NUMBER, 
+  p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_ubicacion, provincia, direccion
+    FROM C##eataway.Ubicacion
+    WHERE id_local = p_local_id;
+END;
+
+---------------------------------------------------
+--VISTAS--
+---------------------------------------------------
+
+--Vista de Locales con Categoría y Foto
+CREATE OR REPLACE VIEW C##eataway.V_LocalesConCategoriaYFoto AS
+SELECT 
+    l.id_local,
+    l.nombre AS local_nombre,
+    l.descripcion,
+    c.tipo AS categoria,
+    (SELECT f.ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto_principal
+FROM C##eataway.Locales l
+LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria;
+
+---------------------------------------------------
+
+--Vista de Reservas con Información de Usuario y Local
+CREATE OR REPLACE VIEW C##eataway.V_ReservasConUsuarioYLocal AS
+SELECT 
+    r.id_reserva,
+    r.fecha,
+    r.hora,
+    r.numero_personas,
+    r.descripcion AS reserva_descripcion,
+    u.nombre || ' ' || u.primer_apellido AS usuario_nombre,
+    l.nombre AS local_nombre
+FROM C##eataway.Reservas r
+JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
+JOIN C##eataway.Locales l ON r.id_local = l.id_local;
+
+---------------------------------------------------
+
+--Vista de Reseñas con Información de Usuario y Local
+CREATE OR REPLACE VIEW C##eataway.V_ResenasConUsuarioYLocal AS
+SELECT 
+    r.id_resena,
+    r.calificacion,
+    r.comentario,
+    u.nombre || ' ' || u.primer_apellido AS usuario_nombre,
+    l.nombre AS local_nombre
+FROM C##eataway.Resenas r
+JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
+JOIN C##eataway.Locales l ON r.id_local = l.id_local;
+
+---------------------------------------------------
+
+--Vista de Eventos Especiales con Información de Local
+CREATE OR REPLACE VIEW C##eataway.V_EventosEspecialesConLocal AS
+SELECT 
+    e.id_evento,
+    e.nombre_evento,
+    e.descripcion AS evento_descripcion,
+    e.fecha_evento,
+    e.hora_evento,
+    l.nombre AS local_nombre
+FROM C##eataway.EventosEspeciales e
+JOIN C##eataway.Locales l ON e.id_local = l.id_local;
+
+---------------------------------------------------
+
+--Vista de Promociones Activas con Información de Local
+CREATE OR REPLACE VIEW C##eataway.V_PromocionesActivasConLocal AS
+SELECT 
+    p.id_promocion,
+    p.nombre AS promocion_nombre,
+    p.descripcion AS promocion_descripcion,
+    p.fecha_inicio,
+    p.fecha_fin,
+    l.nombre AS local_nombre
+FROM C##eataway.Promociones p
+JOIN C##eataway.Locales l ON p.id_local = l.id_local
+WHERE p.estado = 'Activa';
+

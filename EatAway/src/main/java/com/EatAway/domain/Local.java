@@ -36,18 +36,32 @@ public class Local implements Serializable {
 
     @Column(name = "foto")
     private String foto;
+    
+    @Column(name = "telefono")
+    private String telefono;
+    
+    @Column(name = "email")
+    private String email;
+    
+    @Column(name = "instagram")
+    private String instagram;
 
     public Local() {
     }
 
-    public Local(Long idLocal, String nombre, Long idCategoria, String descripcion, String tipoCategoria, String foto) {
+    public Local(Long idLocal, String nombre, Long idCategoria, String descripcion, String tipoCategoria, String foto, String telefono, String email, String instagram) {
         this.idLocal = idLocal;
         this.nombre = nombre;
         this.idCategoria = idCategoria;
         this.descripcion = descripcion;
         this.tipoCategoria = tipoCategoria;
         this.foto = foto;
+        this.telefono = telefono;
+        this.email = email;
+        this.instagram = instagram;
     }
+
+    
     
     
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{sinCuenta/plantilla :: head}">
+        <title>EatAway</title>
+    </head>
+    <body>                    
+            <section th:fragment="detalleEventos">
+            <div id="details" class="contenedor">
+                <div class="col derecha"> 
+                    <div class="mb-3">
+                        <p class="nombreFuente" th:text="#{evento.titulo}"></p>
+                    </div>
+                    <hr class="my-4">
+                    <div th:each="evento, iterStat : ${eventos}" class="evento-container">
+<!--                        <div class="imagen-evento">
+                            <img th:src="${evento.foto}" alt="foto" style="border-radius: 5%;" />
+                        </div>-->
+                        <div class="detalles-evento">
+                            <h3 th:text="${evento.nombreEvento}"> </h3>
+                            <p th:text="${evento.descripcion}"></p>                            
+                            <div class="detalles-adicionales">
+                                <p th:text="#{evento.fecha} + ': ' + ${evento.fechaEvento}"></p>     
+                                <p th:text="#{evento.lugar} + ': ' + ${evento.nombreLocal}"></p>
+                            </div>
+                            <hr class="my-4">
+                        </div>
+                    </div>
+                </div>
+                <div class="col izquierda">
+                    <p style="text-aling: center;">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </body>
+</html>

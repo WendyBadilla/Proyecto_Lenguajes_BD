@@ -3,7 +3,6 @@ package com.EatAway.serviceImpl;
 import com.EatAway.domain.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.EatAway.dao.LocalDao;
 import com.EatAway.service.LocalService;
 
@@ -52,7 +51,7 @@ public class LocalServiceImpl implements LocalService {
                     local.setDescripcion(resultSet.getString("descripcion"));
                     local.setTipoCategoria(resultSet.getString("tipo"));
                     local.setFoto(resultSet.getString("foto"));
-                    
+
                     lista.add(local);
                 }
 
@@ -64,6 +63,45 @@ public class LocalServiceImpl implements LocalService {
         }
 
         return lista;
+    }
+
+    @Override
+    public Local getLocalID(long idLocal) {
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String user = "C##eataway";
+        String password = "sws2024";
+
+        Local local = new Local(); // Crear un objeto Local para devolver
+
+        try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
+            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCALES_OBTENER.ObtenerLocalPorID(?, ?)}";
+
+            try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
+                // Establecimiento del parámetro de entrada
+                llamadaExecute.setLong(1, idLocal);
+                // Registro del parámetro de salida
+                llamadaExecute.registerOutParameter(2, OracleTypes.CURSOR);
+
+                llamadaExecute.execute();
+                try (ResultSet resultSet = (ResultSet) llamadaExecute.getObject(2)) {
+                    if (resultSet.next()) {
+                        local.setIdLocal(resultSet.getLong("id_local"));
+                        local.setNombre(resultSet.getString("nombre"));
+                        local.setIdCategoria(resultSet.getLong("id_categoria"));
+                        local.setDescripcion(resultSet.getString("descripcion"));
+                        local.setTipoCategoria(resultSet.getString("tipo"));
+                        local.setFoto(resultSet.getString("foto"));
+                        local.setTelefono(resultSet.getString("telefono"));
+                        local.setEmail(resultSet.getString("email"));
+                        local.setInstagram(resultSet.getString("instagram"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return local;
     }
 
 }

@@ -65,10 +65,6 @@
                                     [[#{login.iniciaSesion}]]
                             </button>
                             <a>ㅤ</a>
-                            <a sec:authorize="isAuthenticated()" th:href="@{/transporte}" class="btn" style="background-color: #F26535; color: white; border-radius: 25px; width: 200px;">
-                                [[#{sesion.opcionesTransporte}]]
-                            </a>
-                             <a>ㅤ</a>
                             <a sec:authorize="isAuthenticated()" th:href="@{/eventos}" class="btn" style="background-color: #F26535; color: white; border-radius: 25px; width: 200px;">
                                 [[#{sesion.eventos}]]                                
                             </a>                             

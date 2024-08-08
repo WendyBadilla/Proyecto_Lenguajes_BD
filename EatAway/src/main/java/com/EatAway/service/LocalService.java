@@ -8,4 +8,5 @@ import java.util.List;
 public interface LocalService {
    
     public List<Local> getLocales();
+    public Local getLocalID(long local);
 }

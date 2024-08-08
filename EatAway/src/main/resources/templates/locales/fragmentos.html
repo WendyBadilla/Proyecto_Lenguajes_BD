@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<!-- contiene los fragmentos de la vista que muestra la informacion detallada de los locales -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{sinCuenta/plantilla :: head}">
+        <title>EatAway</title>
+    </head>
+    <body>                    
+        
+        <section th:fragment="detalleLocal">
+            <div id="details" class="contenedor">
+                <div class="col derecha">                    
+                    <div class="mb-3">
+                        <p class="nombreFuente" th:text="${local.nombre}"></p>
+                    </div>
+                    <hr class="my-4"> 
+                    <div class="mb-1">
+                        <h6 style="display: inline-block; margin-right: 10px;">[[#{filtro.tipo}]]</h6>
+                        <p style="display: inline-block;" th:text="${local.tipoCategoria}"></p>
+                    </div>
+                    <div class="mb-1">
+                        <i><p style="font-size: 18px" th:text="${local.descripcion}"></p></i>
+                    </div>
+                    <br>
+                    <div class="mb-1">
+                        <h4>[[#{detalle.foto}]]</h4>                        
+                    </div>
+                    <hr class="my-4">
+                    <div class="mb-5">
+                        <img id="blah" th:src="@{${local.foto}}" alt="foto" width="250" height="200" style="border-radius: 10%;"/>
+                    </div>
+                        <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4>[[#{detalle.resena}]]</h4>                            
+                            <button style="background-color: #F54D33; color: white; border-radius: 25px; width: 200px;" type="button" class="btn" 
+                            data-bs-toggle="modal" data-bs-target="#agregarResena">[[#{accion.resena}]]</button>
+                        </div>
+                    <hr class="my-4">
+                    <!--Comentarios de los usuarios-->
+                    <section th:replace="~{locales/fragmentos :: contenidoResena}"/>
+                </div>                
+                <div class="col izquierda">
+                    <div class="mb-3">
+                        <a th:href="@{/reservar/}+${local.idLocal}" class="btn" style="background-color: #F54D33; color: white; border-radius: 25px; width: 200px;">
+                            [[#{accion.reservar}]]
+                        </a>
+                    </div>
+                    <br><br>
+                    <div class="mb-3">
+                        <h6>[[#{detalle.informacion}]]</h6>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-phone"></i><h7> [[#{detalle.tel}]]</h7>
+                        <p th:text="${local.telefono}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-envelope"></i><h7> [[#{detalle.correo}]]</h7>
+                        <p th:text="${local.email}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fab fa-instagram"></i><h7> [[#{detalle.instagram}]]</h7>
+                        <p th:text="${local.instagram}"></p>
+                    </div>       
+                    <br><br>
+                    <div class="mb-4">
+                        <article>                        
+                            <iframe width="300" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                        
+                        </article>
+                        <footer style="font-size: 12px;"></footer>
+                    </div>
+                    <!-- Agrega más campos de información aquí -->
+                </div>
+            </div>
+        </section>        
+        
+        <!--fragmento de la parte de reseñas de los usuarios-->
+        <section th:fragment="contenidoResena">
+            <div th:each="resena : ${listadoResena}" class="">
+                <div class="comment">
+                    <div class="comment-autor">
+                        <!-- Acceder al usuario de la reseña y mostrar el nombre y la foto -->
+                        <div>
+                            <img th:src="@{${resena.fotoUsuario}}" alt="foto" width="50" height="50" style="border-radius: 50%;"/>
+                            <p th:text="${resena.nombreCompleto}"></p>
+                        </div>
+                    </div>
+                    <div class="comment-texto">
+                        <p th:text="${resena.comentario}"></p>
+                        <p style="display: inline-block; margin-right: 10px;">[[#{resena.calificacion}]]</p>
+                        <p style="display: inline-block;" th:text="${resena.calificacion} + ' estrellas'"></p>
+                    </div>
+                </div>
+            </div>            
+        </section>
+        
+        <!-- Fragmento para agregar reseña, es la ventana modal -->
+        <section th:fragment="agregarResena">
+            <div id="agregarResena" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header text-dark menu-superior">
+                            <p class="nombreFuente">[[#{resena.titulo}]]</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/enviar}" th:object="${resena}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <input hidden name="idLocal" th:value="${local.idLocal}"/>
+                                    <input hidden name="idUsuario" th:value="${#ctx.session.idU}"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="calificacion">[[#{resena.califica}]]</label>
+                                    <select class="form-control" name="calificacion" id="calificacion" required="true">
+                                        <option value="1">1 estrella</option>
+                                        <option value="2">2 estrellas</option>
+                                        <option value="3">3 estrellas</option>
+                                        <option value="4">4 estrellas</option>
+                                        <option value="5">5 estrellas</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comentario">[[#{resena.comentario}]]</label>
+                                    <textarea placeholder="Agregar comentario..." type="text" class="form-control"
+                                              name="comentario" required="true"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn" type="submit"
+                                        style="background-color: #F54D33; color: white; border-radius: 25px; width: 200px;">
+                                    [[#{accion.enviaresena}]]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </body>
+</html>

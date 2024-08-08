@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="inicio/plantilla :: head">        
+    </head>
+    <body>
+        <div class="row py-5 justify-content-center">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header align-items-center">
+                        [[${titulo}]]
+                    </div>
+                    <div class="card-body">
+                        <strong>[[${mensaje}]]</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

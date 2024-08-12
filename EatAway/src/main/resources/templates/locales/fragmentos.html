@@ -113,7 +113,9 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <input hidden name="idLocal" th:value="${local.idLocal}"/>
-                                    <input hidden name="idUsuario" th:value="${#ctx.session.idU}"/>
+                                    <!--<input hidden name="idUsuario" th:value="${#ctx.session.idU}"/>-->
+                                    <!--Esto debemos cambiarlo para que obtnega el id de la persona logeada-->
+                                    <input hidden name="idUsuario" value="1"/>
                                 </div>
                                 <div class="mb-3">
                                     <label for="calificacion">[[#{resena.califica}]]</label>

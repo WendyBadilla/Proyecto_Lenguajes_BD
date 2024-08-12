@@ -54,5 +54,34 @@ public class ResenaServiceImpl implements ResenaService {
 
         return resenas;
     }
+    
+    @Override
+    public void saveResena(Resena resena) {
+
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String user = "C##eataway";
+        String password = "sws2024";
+
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password)) {
+            System.out.println("Connected to the Oracle database");
+
+            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESENAS_MANEJAR.InsertarResenaSP(?, ?, ?, ?) }";
+            System.out.println("Agregar mediante paquete");
+            try (CallableStatement callableStatement = connection.prepareCall(callStatement)) {
+
+                callableStatement.setInt(1, resena.getIdUsuario());
+                callableStatement.setInt(2, resena.getIdLocal());
+                callableStatement.setInt(3, resena.getCalificacion());
+                callableStatement.setString(4, resena.getComentario());
+
+                callableStatement.execute();
+                System.out.println("Stored procedure de creacion ejecutado exitosamente.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error detected");
+            e.printStackTrace();
+        }
+
+    }
 
 }

@@ -27,8 +27,7 @@
                                 <!--<input hidden name="activo" value="1"/>-->
                                 <input hidden name="lugar" th:value="${local.nombre}"/>
                                 <input hidden name="idLocal" th:value="${local.idLocal}"/>
-                                <!--<input hidden name="idUsuario" th:value="${#ctx.session.idU}"/>-->
-                                <input hidden name="idUsuario" value="1"/>
+                                <input hidden name="idUsuario" th:value="${session.id_usuario}"/>
                                 <!--------------------------------------------------------------->
                             </div>
                             <div class="mb-3">

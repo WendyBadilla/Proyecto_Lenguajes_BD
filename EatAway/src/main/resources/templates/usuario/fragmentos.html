@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{sinCuenta/plantilla :: head}">
+        <title>EatAway</title>
+    </head>
+    <body>
+        <section th:fragment="editarUsuario">
+            <div id="details" class="contenedor">
+                <div class="row">                    
+                    <div class="col-md-9">
+                        <div class="col derecha">                    
+                            <div class="mb-3">
+                                <p class="nombreFuente">[[#{login.titulo}]]</p>
+                            </div>
+                            <hr class="my-4">
+                                <form method="POST" th:action="@{/usuario/guardar}" th:object="${usuario}" class="was-validated" enctype="multipart/form-data">
+                                    <fieldset>
+                                        <input hidden name="idUsuario" th:value="${session.id_usuario}"/>
+                                        <legend>[[#{cuenta.info}]]</legend>
+                                        <div class="mb-3">
+                                            <label for="nombre">[[#{login.nombre}]]</label>
+                                            <input type="text" class="form-control" name="nombre" th:field="*{nombre}" required="true">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="primerApellido">[[#{login.apellido1}]]</label>
+                                            <input type="text" class="form-control" name="primerApellido" th:field="*{primerApellido}" required="true">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="segundoApellido">[[#{login.apellido2}]]</label>
+                                            <input type="text" class="form-control" name="segundoApellido" th:field="*{segundoApellido}" required="true">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="correo">[[#{login.correo}]]</label>
+                                            <input type="text" class="form-control" name="correo" th:field="*{correo}" required="true">
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="mb-3">                                            
+                                            <img id="blah" th:src="@{${usuario.foto}}" alt="your image" height="200"/>
+                                            <input class="form-control" type="file" name="imagenFile" onchange="readURL(this);" />
+                                        </div>
+                                    </fieldset>
+
+                                    <div class="col-md-4 d-grid">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                                        </button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </section>
+</body>
+

@@ -82,7 +82,7 @@
                     <div class="comment-autor">
                         <!-- Acceder al usuario de la reseña y mostrar el nombre y la foto -->
                         <div>
-                            <img th:src="@{${resena.fotoUsuario}}" alt="foto" width="50" height="50" style="border-radius: 50%;"/>
+                            <img th:src="${resena.fotoUsuario}" alt="foto" width="50" height="50" style="border-radius: 50%;"/>
                             <p th:text="${resena.nombreCompleto}"></p>
                         </div>
                     </div>
@@ -113,9 +113,7 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <input hidden name="idLocal" th:value="${local.idLocal}"/>
-                                    <!--<input hidden name="idUsuario" th:value="${#ctx.session.idU}"/>-->
-                                    <!--Esto debemos cambiarlo para que obtnega el id de la persona logeada-->
-                                    <input hidden name="idUsuario" value="1"/>
+                                    <input hidden name="idUsuario" th:value="${session.id_usuario}"/>
                                 </div>
                                 <div class="mb-3">
                                     <label for="calificacion">[[#{resena.califica}]]</label>

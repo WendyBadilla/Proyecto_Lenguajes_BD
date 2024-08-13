@@ -64,15 +64,10 @@
                                     data-bs-toggle="modal" data-bs-target="#iniciaCuenta">
                                     [[#{login.iniciaSesion}]]
                             </button>
-                            <a>ㅤ</a>
+                            <a>ㅤ</a>                            
                             <a sec:authorize="isAuthenticated()" th:href="@{/eventos}" class="btn" style="background-color: #F26535; color: white; border-radius: 25px; width: 200px;">
                                 [[#{sesion.eventos}]]                                
-                            </a>                             
-                            <a>ㅤ</a>
-                            <div sec:authorize="isAuthenticated()" class="user-bubble p-2 rounded bg-light">
-                                <h10>[[#{login.username}]]:</h10>
-                                <h10  class="text-dark" sec:authentication="name"></h10>
-                            </div>
+                            </a>      
                             <a>ㅤ</a>
                             <div class="dropdown" sec:authorize="isAuthenticated()">
                                 <button class="btn btn-secondary" style="background-color: gray; color: white; border-radius: 25px;" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,7 +77,7 @@
                                     <li><a th:href="@{/reservas}" class="dropdown-item" type="button">[[#{dropdown.reservas}]]</a></li>
                                     <li><a th:href="@{/resenas}" class="dropdown-item" type="button">[[#{dropdown.resenas}]]</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a th:href="@{/usuario/modificar/}+${session.idU}" class="dropdown-item" type="button">[[#{dropdown.cuenta}]]</a></li>
+                                    <li><a th:href="@{/usuario/modificar/}+${session.id_usuario}" class="dropdown-item" type="button">[[#{dropdown.cuenta}]]</a></li>
                                     <li><a th:href="@{/centroAyuda}" class="dropdown-item" type="button">[[#{dropdown.ayuda}]]</a></li>                                   
                                     <li>
                                         <!-- Agrega un formulario para el botón de cerrar sesión -->
@@ -91,10 +86,19 @@
                                         </form>
                                     </li>                                    
                                 </ul>
-                            </div>
-                        </ul>                     
+                            </div>                            
+                        </ul>                        
                     </div>
-                </div>
+                    <a>ㅤ</a>
+                    <a>ㅤ</a>
+                    <ul class="navbar-nav">
+                        <div sec:authorize="isAuthenticated()">
+                            <!--<h10>[[#{login.username}]]:</h10>-->
+                            <!--<h10  class="text-dark" sec:authentication="name"></h10>-->
+                            <img th:src="${#ctx.session.usuarioImagen}" class="profile-img" />
+                        </div>
+                    </ul>
+                </div>                
             </nav>
         </section>
        

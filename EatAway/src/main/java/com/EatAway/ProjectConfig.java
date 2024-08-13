@@ -65,25 +65,24 @@ public class ProjectConfig implements WebMvcConfigurer{
         registry.addViewController("/index").setViewName("index");
     }
     
-//    @Autowired
-//    private UserDetailsService userDetailsService;
-//    
-//    @Autowired
-//    public void configurerGloal(AuthenticationManagerBuilder builder) throws Exception{
-//        builder.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-//    }
+    @Autowired
+    private UserDetailsService userDetailsService;
     
-    /* El siguiente método se utiliza para completar la clase no es 
-    realmente funcional, la próxima semana se reemplaza con usuarios de BD */
-    @Bean
-    public UserDetailsService users() {
-        UserDetails admin = User.builder()
-                .username("juan")
-                .password("{noop}123")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(admin);
+    @Autowired
+    public void configurerGloal(AuthenticationManagerBuilder builder) throws Exception{
+        builder.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
+    
+//    /* El siguiente método  no es realmente funcional porque no usa los usuarios de la BD */
+//    @Bean
+//    public UserDetailsService users() {
+//        UserDetails admin = User.builder()
+//                .username("juan")
+//                .password("{noop}123")
+//                .roles("USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(admin);
+//    }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -91,14 +90,14 @@ public class ProjectConfig implements WebMvcConfigurer{
                 .authorizeHttpRequests((request) -> request
                 .requestMatchers("/", "/index", "/errores/**","/error","/error/***",
                         "/error", "/error/***", "/js/**", "/webjars/**"
-                ,"/css/**","/imagenes/**", "/registro/**","/detalle/**")
+                ,"/css/**","/imagenes/**", "/registro/**")
                 .permitAll()
                 .requestMatchers(
-                        "/eventos", "/transporte", "/usuario/**",
+                        "/detalle/**","/eventos", "/transporte", "/usuario/**",
                         "/enviar", "/reservar/**","/resenas/resena",
                         "/guardar",  "/reservas/**", "/reservas/eliminar/**",
                         "/resenas/**","/cuenta/**","/centroAyuda"
-                ).hasRole("USER")                
+                ).authenticated()               
                 )
                 .formLogin((form) -> form
                 .loginPage("/").permitAll())

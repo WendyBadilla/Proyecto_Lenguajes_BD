@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="password">[[#{login.password}]]</label>
-                                    <input type="text" class="form-control" name="password" th:field="*{password}" required="true"/>
+                                    <input type="password" class="form-control" name="password" required="true"/>
                                 </div>
                                 <div class="mb-3">
                                     <label for="imagen">[[#{login.foto}]]</label>
@@ -128,7 +128,7 @@
                                     <label for="email">[[#{login.correo}]]</label>
                                     <input type="email" class="form-control" name="correo" th:field="*{correo}"/></div>
                             </div>
-                            <div class="card-footer text-end">    
+                            <div class="card-footer d-flex justify-content-end gap-2">
                                 <a th:href="@{/registro/nuevo}" class="btn btn-dark text-white">
                                     <i class="fas fa-arrow-left"></i>
                                     [[#{accion.regresar}]]

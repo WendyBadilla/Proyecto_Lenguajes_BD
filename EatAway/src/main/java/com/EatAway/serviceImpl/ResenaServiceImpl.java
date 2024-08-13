@@ -3,6 +3,8 @@ package com.EatAway.serviceImpl;
 import com.EatAway.service.ResenaService;
 import org.springframework.stereotype.Service;
 import com.EatAway.domain.Resena;
+import com.EatAway.domain.Usuario;
+import com.EatAway.service.UsuarioService;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -12,10 +14,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import oracle.jdbc.OracleTypes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 
 @Service
 public class ResenaServiceImpl implements ResenaService {
 
+    @Autowired
+    private UsuarioService usuarioService;
+    @Autowired
+    private FirebaseStorageServiceImpl firebaseStorageService;
+    
     @Override
     public List<Resena> getResenasPorLocal(long idLocal) {
         String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";

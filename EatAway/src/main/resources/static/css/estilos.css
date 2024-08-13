@@ -164,6 +164,14 @@ legend {
     border-radius: 50%;
     overflow: hidden;
 }
+
+.profile-img {
+    border-radius: 50%; 
+    width: 80px; 
+    height: 80px;
+    object-fit: cover; 
+}
+    
 /*++++++++++++++++++++++++*/
 /*para los elemntos de tipo id (especificos)*/
 /*#encabezado{

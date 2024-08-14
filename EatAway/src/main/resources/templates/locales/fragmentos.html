@@ -29,9 +29,13 @@
                         <h4>[[#{detalle.foto}]]</h4>                        
                     </div>
                     <hr class="my-4">
-                    <div class="mb-5">
-                        <img id="blah" th:src="@{${local.foto}}" alt="foto" width="250" height="200" style="border-radius: 10%;"/>
-                    </div>
+                        <div class="mb-5">
+                            <div class="foto-container">
+                                <div th:each="foto : ${listadoFotos}">
+                                    <img id="blah" th:src="@{${foto.rutaFoto}}" alt="foto" width="250" height="200" style="border-radius: 10%;"/>
+                                </div>
+                            </div>
+                        </div>
                         <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
                             <h4>[[#{detalle.resena}]]</h4>                            
                             <button style="background-color: #F54D33; color: white; border-radius: 25px; width: 200px;" type="button" class="btn" 
@@ -62,15 +66,19 @@
                     <div class="mb-3">
                         <i class="fab fa-instagram"></i><h7> [[#{detalle.instagram}]]</h7>
                         <p th:text="${local.instagram}"></p>
-                    </div>       
-                    <br><br>
-                    <div class="mb-4">
-                        <article>                        
-                            <iframe width="300" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                        
-                        </article>
-                        <footer style="font-size: 12px;"></footer>
-                    </div>
+                    </div>      
                     <!-- Agrega más campos de información aquí -->
+                    <div class="mb-3">
+                        <h6>[[#{detalle.ubicacion}]]</h6>
+                    </div>
+                    <div class="ubicaciones-container">
+                        <div th:each="ubicacion : ${listadoUbicaciones}" class="ubicacion-item">
+                            <div class="ubicacion-content">
+                                <h7 th:text="${ubicacion.provincia}"></h7>
+                                <p th:text="${ubicacion.direccion}"></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>        

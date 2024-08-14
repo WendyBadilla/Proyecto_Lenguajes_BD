@@ -126,7 +126,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>${start-class}</mainClass>
                 </configuration>
             </plugin>
         </plugins>

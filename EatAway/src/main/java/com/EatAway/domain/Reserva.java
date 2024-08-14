@@ -39,11 +39,14 @@ public class Reserva implements Serializable {
 
     @Column(name = "descripcion")
     private String descripcion;
+    
+    @Column(name = "nombre_local")
+    private String nombreLocal;
 
     public Reserva() {
     }
 
-    public Reserva(Long idReserva, Integer idUsuario, Integer idLocal, Date fecha, String hora, Integer numeroPersonas, String descripcion) {
+    public Reserva(Long idReserva, Integer idUsuario, Integer idLocal, Date fecha, String hora, Integer numeroPersonas, String descripcion, String nombreLocal) {
         this.idReserva = idReserva;
         this.idUsuario = idUsuario;
         this.idLocal = idLocal;
@@ -51,7 +54,10 @@ public class Reserva implements Serializable {
         this.hora = hora;
         this.numeroPersonas = numeroPersonas;
         this.descripcion = descripcion;
+        this.nombreLocal = nombreLocal;
     }
+
+    
 
     
 }

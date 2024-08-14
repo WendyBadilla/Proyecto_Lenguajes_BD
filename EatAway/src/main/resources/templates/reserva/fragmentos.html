@@ -25,7 +25,6 @@
                             <div class="mb-3">
                                 <!---->
                                 <!--<input hidden name="activo" value="1"/>-->
-                                <input hidden name="lugar" th:value="${local.nombre}"/>
                                 <input hidden name="idLocal" th:value="${local.idLocal}"/>
                                 <input hidden name="idUsuario" th:value="${session.id_usuario}"/>
                                 <!--------------------------------------------------------------->
@@ -79,11 +78,11 @@
                     <hr class="my-4">
                     <div th:each="reserva, iterStat : ${reservas}" class="evento-container">                        
                         <div class="detalles-evento">
-                            <h3 th:text="${reserva.lugar}"> </h3>                            
+                            <h3 th:text="${reserva.nombreLocal}"> </h3>                            
                             <div class="detalles-adicionales">                                
                                 <div class="my-2">
                                     <h6 style="display: inline-block; margin-right: 10px;">[[#{reserva.persona}]]</h6>
-                                    <p style="display: inline-block;"th:text="${reserva.cantidad}"></p>
+                                    <p style="display: inline-block;"th:text="${reserva.numeroPersonas}"></p>
                                 </div>
                                 <div class="my-2">
                                     <h6 style="display: inline-block; margin-right: 10px;">[[#{reserva.fecha}]]</h6>
@@ -92,10 +91,6 @@
                                 <div class="my-2">
                                     <h6 style="display: inline-block; margin-right: 10px;">[[#{reserva.hora}]]</h6>
                                     <p style="display: inline-block;"th:text="${reserva.hora}"></p>
-                                </div>
-                                <div class="my-2">
-                                    <h6 style="display: inline-block; margin-right: 10px;">[[#{reserva.ocasion}]]</h6>
-                                    <p style="display: inline-block;"th:text="${reserva.ocasion}"></p>
                                 </div>
                                 <div class="my-2">
                                     <h6 style="display: inline-block; margin-right: 10px;">[[#{reserva.descripcion}]]</h6>

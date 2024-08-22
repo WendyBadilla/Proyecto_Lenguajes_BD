@@ -27,7 +27,7 @@ public class ReservaServiceImpl implements ReservaService {
         try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password)) {
             System.out.println("Connected to the Oracle database");
 
-            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVAS_MANEJAR.InsertarReservaSP(?, ?, ?, ?, ?, ?) }";
+            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVA_INSERTAR.InsertarReservaSP(?, ?, ?, ?, ?, ?) }";
             System.out.println("Agregar mediante paquete");
             try (CallableStatement callableStatement = connection.prepareCall(callStatement)) {
 
@@ -64,7 +64,7 @@ public class ReservaServiceImpl implements ReservaService {
         try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password)) {
             System.out.println("Connected to the Oracle database");
 
-            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVAS_OBTENER.ObtenerReservasPorUsuarioSP(?, ?) }";
+            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVA_OBTENER.ObtenerReservasPorUsuarioSP(?, ?) }";
             System.out.println("Consultar mediante paquete");
 
             try (CallableStatement callableStatement = connection.prepareCall(callStatement)) {
@@ -104,7 +104,7 @@ public class ReservaServiceImpl implements ReservaService {
         Long id = reserva.getIdReserva();
         
         String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
-        String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVAS_MANEJAR.EliminarReservaSP(?) }";
+        String callStatement = "{ call C##eataway.PCK_EATAWAY_RESERVA_ELIMINAR.EliminarReservaSP(?) }";
         System.out.println("Eliminacion preparada con paquete");
 
         try (Connection conexion = DriverManager.getConnection(jdbcUrl, "C##eataway", "sws2024")) {

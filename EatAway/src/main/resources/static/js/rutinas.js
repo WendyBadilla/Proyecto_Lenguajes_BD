@@ -13,7 +13,24 @@ function readURL(input) {
     }
 }
 
+$(document).ready(function () {
+    $('#filtroForm').on('submit', function (event) {
+        event.preventDefault(); // Evita el envío normal del formulario
+        cargarLocales();
+    });
+});
 
+function cargarLocales() {
+    var $form = $('#filtroForm');
+    $.ajax({
+        url: $form.attr('action'),
+        type: 'GET',
+        data: $form.serialize(),
+        success: function (response) {
+            $('#resultsBlock').html(response);
+        }
+    });
+}
 
 
 

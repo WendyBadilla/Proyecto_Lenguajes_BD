@@ -1,5 +1,6 @@
 package com.EatAway.controller;
 
+import com.EatAway.domain.Categoria;
 import com.EatAway.domain.Fotos;
 import com.EatAway.domain.Local;
 import com.EatAway.domain.Resena;
@@ -14,6 +15,8 @@ import com.EatAway.service.LocalService;
 import com.EatAway.service.ResenaService;
 import com.EatAway.service.UbicacionService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LocalController {
@@ -33,8 +36,13 @@ public class LocalController {
     @GetMapping("/")
     public String inicio(Model model) {
         List<Local> listado = restbarService.getLocales();
+        
+        // Obtener tipos de local
+        List<Categoria> categorias = restbarService.obtenerTiposEstablecimiento();
 
         model.addAttribute("locales", listado);
+        model.addAttribute("categorias", categorias);
+         
         return "index";
     }
 
@@ -57,5 +65,23 @@ public class LocalController {
         
         return "/locales/detalle";
     }
+
+    @GetMapping("/filtro")
+public String filtrarLocales(@RequestParam(required = false) String tipoEstablecimiento, Model model) {
+    List<Local> locales;
+    
+    if (tipoEstablecimiento == null || tipoEstablecimiento.isEmpty()) {
+        // Si no se selecciona nada, carga todos los locales
+        locales = restbarService.getLocales();
+    } else {
+        // Filtra los locales por el tipo seleccionado
+        locales = restbarService.encontrarTipoEstablecimiento(tipoEstablecimiento);
+    }
+    
+    model.addAttribute("locales", locales);
+    return "inicio/fragmentosInicio :: cardsLocal";
+}
+
+
 
 }

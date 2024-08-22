@@ -36,7 +36,7 @@ public class EventoServiceImpl implements EventoService{
         try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
             System.out.println("Conectado a la base de datos");
 
-            String callStatement = "{call C##eataway.PCK_EATAWAY_EVENTOS_OBTENER.ObtenerEventosEspecialesSP(?)}";
+            String callStatement = "{call C##eataway.PCK_EATAWAY_EVENTO_OBTENER.ObtenerEventosEspecialesSP(?)}";
             System.out.println("Obtención de eventos");
             try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
                 llamadaExecute.registerOutParameter(1, OracleTypes.CURSOR);

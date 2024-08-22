@@ -34,7 +34,7 @@ public class ResenaServiceImpl implements ResenaService {
         List<Resena> resenas = new ArrayList<>();
 
         try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
-            String callStatement = "{call C##eataway.PCK_EATAWAY_RESENAS_OBTENER.ObtenerResenasPorLocalSP(?, ?)}";
+            String callStatement = "{call C##eataway.PCK_EATAWAY_RESENA_OBTENER.ObtenerResenasPorLocalSP(?, ?)}";
 
             try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
                 // Establecimiento del parámetro de entrada
@@ -74,7 +74,7 @@ public class ResenaServiceImpl implements ResenaService {
         try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password)) {
             System.out.println("Connected to the Oracle database");
 
-            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESENAS_MANEJAR.InsertarResenaSP(?, ?, ?, ?) }";
+            String callStatement = "{ call C##eataway.PCK_EATAWAY_RESENA_INSERTAR.InsertarResenaSP(?, ?, ?, ?) }";
             System.out.println("Agregar mediante paquete");
             try (CallableStatement callableStatement = connection.prepareCall(callStatement)) {
 

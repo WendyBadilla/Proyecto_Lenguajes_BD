@@ -4,6 +4,7 @@ import com.EatAway.domain.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.EatAway.dao.LocalDao;
+import com.EatAway.domain.Categoria;
 import com.EatAway.service.LocalService;
 
 import java.sql.CallableStatement;
@@ -35,7 +36,7 @@ public class LocalServiceImpl implements LocalService {
         try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
             System.out.println("Conectado a la base de datos");
 
-            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCALES_OBTENER.ObtenerLocalesSP(?)}";
+            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCAL_OBTENER.ObtenerLocalesSP(?)}";
             System.out.println("Obtención de locales");
             try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
                 llamadaExecute.registerOutParameter(1, OracleTypes.CURSOR);
@@ -74,7 +75,7 @@ public class LocalServiceImpl implements LocalService {
         Local local = new Local(); // Crear un objeto Local para devolver
 
         try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
-            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCALES_OBTENER.ObtenerLocalPorID(?, ?)}";
+            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCAL_OBTENER.ObtenerLocalPorID(?, ?)}";
 
             try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
                 // Establecimiento del parámetro de entrada
@@ -104,4 +105,81 @@ public class LocalServiceImpl implements LocalService {
         return local;
     }
 
+    @Override
+    public List<Local> encontrarTipoEstablecimiento(String tipoEstablecimiento) {
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String user = "C##eataway";
+        String password = "sws2024";
+        List<Local> lista = new ArrayList<>();
+
+        try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
+            String tipoString = String.join(",", tipoEstablecimiento);
+            String callStatement = "{call C##eataway.PCK_EATAWAY_LOCAL_OBTENER_TIPO.ObtenerLocalesPorTipo(?, ?)}";
+
+            try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
+                llamadaExecute.setString(1, tipoString);
+                llamadaExecute.registerOutParameter(2, OracleTypes.CURSOR);
+
+                llamadaExecute.execute();
+                ResultSet resultSet = (ResultSet) llamadaExecute.getObject(2);
+
+                while (resultSet.next()) {
+                    Local local = new Local();
+                    local.setIdLocal(resultSet.getLong("id_local"));
+                    local.setNombre(resultSet.getString("nombre"));
+                    local.setIdCategoria(resultSet.getLong("id_categoria"));
+                    local.setDescripcion(resultSet.getString("descripcion"));
+                    local.setTipoCategoria(resultSet.getString("tipo"));
+                    local.setFoto(resultSet.getString("foto"));
+
+                    lista.add(local);
+                }
+
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return lista;
+    }
+
+    @Override
+    public List<Categoria> obtenerTiposEstablecimiento() {
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String user = "C##eataway";
+        String password = "sws2024";
+        List<Categoria> lista = new ArrayList<>();
+
+        try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
+            System.out.println("Conectado a la base de datos");
+
+            String callStatement = "{call ObtenerCategoriasSP(?)}";
+            System.out.println("Obtención de categorias");
+            try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
+                llamadaExecute.registerOutParameter(1, OracleTypes.CURSOR);
+
+                llamadaExecute.execute();
+                ResultSet resultSet = (ResultSet) llamadaExecute.getObject(1);
+
+                while (resultSet.next()) {
+                    Categoria categoria = new Categoria();
+                    categoria.setIdCategoria(resultSet.getLong("id_categoria"));
+                    categoria.setTipoCategoria(resultSet.getString("tipo"));
+
+                    lista.add(categoria);
+                }
+
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+
+        return lista;
+    
+    }
+
+    
 }

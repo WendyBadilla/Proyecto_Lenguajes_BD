@@ -32,7 +32,28 @@ function cargarLocales() {
     });
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Obtén el modal y su contenido
+    var modal = document.getElementById('editarResena');
+    var calificacionSelect = modal.querySelector('#calificacion');
+    var comentarioTextarea = modal.querySelector('textarea[name="comentario"]');
+    var idResenaInput = modal.querySelector('input[name="idResena"]');
 
+    // Función para actualizar el modal
+    function actualizarModal(event) {
+        var button = event.relatedTarget; // Botón que abrió el modal
+        var idResena = button.getAttribute('data-id-resena');
+        var calificacion = button.getAttribute('data-calificacion');
+        var comentario = button.getAttribute('data-comentario');
 
+        // Actualiza los campos del modal
+        idResenaInput.value = idResena;
+        calificacionSelect.value = calificacion;
+        comentarioTextarea.value = comentario;
+    }
+
+    // Añade el evento al abrir el modal
+    modal.addEventListener('show.bs.modal', actualizarModal);
+});
 
 

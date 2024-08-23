@@ -42,10 +42,13 @@ public class Resena implements Serializable {
     @Column(name = "foto_usuario")
     private String fotoUsuario;
 
+    @Column(name = "nombre_local")
+    private String nombreLocal;
+
     public Resena() {
     }
 
-    public Resena(Long idResena, Integer idUsuario, Integer idLocal, Integer calificacion, String comentario, String nombreCompleto, String nombreUsuario, String fotoUsuario) {
+    public Resena(Long idResena, Integer idUsuario, Integer idLocal, Integer calificacion, String comentario, String nombreCompleto, String nombreUsuario, String fotoUsuario, String nombreLocal) {
         this.idResena = idResena;
         this.idUsuario = idUsuario;
         this.idLocal = idLocal;
@@ -54,8 +57,8 @@ public class Resena implements Serializable {
         this.nombreCompleto = nombreCompleto;
         this.nombreUsuario = nombreUsuario;
         this.fotoUsuario = fotoUsuario;
+        this.nombreLocal = nombreLocal;
     }
-
     
 
     

@@ -35,6 +35,35 @@
                 </div>
             </div>
         </section>
+        
+        <section th:fragment="detallePromociones">
+            <div id="details" class="contenedor">
+                <div class="col derecha"> 
+                    <div class="mb-3">
+                        <p class="nombreFuente" th:text="#{promocion.titulo}"></p>
+                    </div>
+                    <hr class="my-4">
+                    <div th:each="promocion, iterStat : ${promociones}" class="evento-container">
+                        <div class="imagen-evento">
+                            <img th:src="${promocion.fotoLocal}" alt="foto" style="border-radius: 5%;" />
+                        </div>
+                        <div class="detalles-evento">                            
+                            <p class="nombreFuente" th:text="${promocion.nombrePromocion}"> </p>
+                            <h3  th:text="${promocion.nombreLocal}"></h3>
+                            <h3 th:text="${promocion.descripcion}"></h3>                            
+                            <div class="detalles-adicionales"> 
+                                <h6 th:text="#{promocion.fechaFin} + ': ' + ${promocion.fechaFin}"></h6>
+                            </div>
+                            <hr class="my-4">
+                        </div>
+                    </div>
+                </div>
+                <div class="col izquierda">
+                    <p style="text-aling: center;">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ
+                    </p>
+                </div>
+            </div>
+        </section>
 
     </body>
 </html>

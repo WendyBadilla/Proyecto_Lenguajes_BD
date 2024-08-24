@@ -31,8 +31,10 @@ CREATE TABLE Usuarios (
     segundo_apellido VARCHAR2(50),
     correo VARCHAR2(100) NOT NULL UNIQUE,
     password varchar(200) NOT NULL,
-    foto VARCHAR2(255)
+    foto VARCHAR2(1024)
 );
+ALTER TABLE Usuarios
+MODIFY foto VARCHAR2(1024);
 
 -- Tabla Locales
 CREATE TABLE Locales (
@@ -59,9 +61,9 @@ CREATE TABLE Reservas (
     id_usuario NUMBER,  -- Relación con Usuarios
     id_local NUMBER,  -- Relación con Locales
     fecha DATE NOT NULL,
-    hora TIMESTAMP(0) NOT NULL,
+    hora VARCHAR2(10) NOT NULL,
     numero_personas NUMBER NOT NULL,
-    descripcion CLOB,
+    descripcion VARCHAR2(200),
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
     FOREIGN KEY (id_local) REFERENCES Locales(id_local)
 );
@@ -72,7 +74,7 @@ CREATE TABLE Resenas (
     id_usuario NUMBER,  -- Relación con Usuarios
     id_local NUMBER,  -- Relación con Locales
     calificacion NUMBER CHECK (calificacion BETWEEN 1 AND 5),
-    comentario CLOB,
+    comentario VARCHAR2(200),
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
     FOREIGN KEY (id_local) REFERENCES Locales(id_local)
 );
@@ -128,20 +130,20 @@ INSERT INTO Categoria (tipo) VALUES ('Restaurante');
 INSERT INTO Categoria (tipo) VALUES ('Bar');
 
 -- Insertar en Usuarios
-INSERT INTO Usuarios (username, nombre, primer_apellido, segundo_apellido, correo, password, foto) VALUES ('weny', 'Wendy', 'Badilla', 'Carvajal', 'wendybadilla40@gmail.com', '123', '');
-INSERT INTO Usuarios (username, nombre, primer_apellido, segundo_apellido, correo, password, foto) VALUES ('ste', 'Steven', 'Chacon', 'Camacho', 'stchch06@gmail.com', '123', '');
+INSERT INTO Usuarios (username, nombre, primer_apellido, segundo_apellido, correo, password, foto) VALUES ('weny', 'Wendy', 'Badilla', 'Carvajal', 'wendybadilla40@gmail.com', '123', 'https://www.myoutfie.com/historias/wp-content/uploads/2019/10/ropa-mujer-casual-1.jpg');
+INSERT INTO Usuarios (username, nombre, primer_apellido, segundo_apellido, correo, password, foto) VALUES ('ste', 'Steven', 'Chacon', 'Camacho', 'stchch06@gmail.com', '123', 'https://faraisnake.com/wp-content/uploads/2024/01/image-36-820x1024.png');
 
 -- Insertar en Locales
-INSERT INTO Locales (nombre, id_categoria, descripcion) VALUES ('Zuntra', 1, 'Un pedacito de jungla de playa en Bº Escalante');
-INSERT INTO Locales (nombre, id_categoria, descripcion) VALUES ('Ahumaditos', 2, 'La mejor calidad en platillos ahumados y a la parrilla');
+INSERT INTO Locales (nombre, id_categoria, descripcion) VALUES ('Zuntra', 2, 'Un pedacito de jungla de playa en Bº Escalante');
+INSERT INTO Locales (nombre, id_categoria, descripcion) VALUES ('Ahumaditos', 1, 'La mejor calidad en platillos ahumados y a la parrilla');
 
 -- Insertar en Contactos
 INSERT INTO Contactos (id_local, telefono, email, instagram) VALUES (1, '70856984', 'zuntra@gmail.com', '@zuntracr');
 INSERT INTO Contactos (id_local, telefono, email, instagram) VALUES (2, '71799808', 'ahumado@gmail.com', '@ahumadictoscr');
 
 -- Insertar en Reservas
-INSERT INTO Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion) VALUES (1, 1, TO_DATE('2024-07-18', 'YYYY-MM-DD'), TO_TIMESTAMP('18-07-2024 19:00:00', 'DD-MM-YYYY HH24:MI:SS'), 4, 'Reserva para 4 personas');
-INSERT INTO Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion) VALUES (2, 2, TO_DATE('2024-07-19', 'YYYY-MM-DD'), TO_TIMESTAMP('19-07-2024 20:00:00', 'DD-MM-YYYY HH24:MI:SS'), 2, 'Reserva para 2 personas');
+INSERT INTO Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion) VALUES (1, 1, TO_DATE('2024-07-18', 'YYYY-MM-DD'), '05:00 pm', 4, 'Reserva para 4 personas');
+INSERT INTO Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion) VALUES (2, 2, TO_DATE('2024-07-19', 'YYYY-MM-DD'), '06:00 pm', 2, 'Reserva para 2 personas');
 
 -- Insertar en Reseñas
 INSERT INTO Resenas (id_usuario, id_local, calificacion, comentario) VALUES (1, 1, 5, 'Excelente servicio');
@@ -150,10 +152,11 @@ INSERT INTO Resenas (id_usuario, id_local, calificacion, comentario) VALUES (2, 
 -- Insertar en Fotos
 INSERT INTO Fotos (id_local, ruta_foto) VALUES (1, 'https://lh3.googleusercontent.com/p/AF1QipMrcbuz-ccUfjUWJtJ7Q545RtCdDSiiDPLgKcqk=s1360-w1360-h1020');
 INSERT INTO Fotos (id_local, ruta_foto) VALUES (2, 'https://lh3.googleusercontent.com/p/AF1QipPR6U9O6l9P8Xo7vSs6n4ObgAllehEnVWyKxgQt=s1360-w1360-h1020');
+INSERT INTO Fotos (id_local, ruta_foto) VALUES (2, 'https://jbarrelsmoker.com/cdn/shop/files/86bde1e6-f8da-4fcf-abb3-ea47b9176384_001af96c-c203-44b9-8693-c84b00539644.jpg?v=1715355189&width=1445');
 
 -- Insertar en Eventos Especiales
-INSERT INTO EventosEspeciales (id_local, nombre_evento, descripcion, fecha_evento, hora_evento) VALUES (1, 'Evento 1', 'Descripción del Evento 1', TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_TIMESTAMP('20-07-2024 18:00:00', 'DD-MM-YYYY HH24:MI:SS'));
-INSERT INTO EventosEspeciales (id_local, nombre_evento, descripcion, fecha_evento, hora_evento) VALUES (2, 'Evento 2', 'Descripción del Evento 2', TO_DATE('2024-07-21', 'YYYY-MM-DD'), TO_TIMESTAMP('21-07-2024 19:00:00', 'DD-MM-YYYY HH24:MI:SS'));
+INSERT INTO EventosEspeciales (id_local, nombre_evento, descripcion, fecha_evento, hora_evento) VALUES (1, 'Festival de Música Primavera', 'Únete a nosotros para una celebración vibrante de la música durante nuestro Festival de Música Primavera. Disfruta de actuaciones en vivo de bandas locales y artistas internacionales mientras te sumerges en un ambiente festivo con comida deliciosa y actividades para toda la familia.', TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_TIMESTAMP('20-07-2024 18:00:00', 'DD-MM-YYYY HH24:MI:SS'));
+INSERT INTO EventosEspeciales (id_local, nombre_evento, descripcion, fecha_evento, hora_evento) VALUES (2, 'Noche de Cocteles y Jazz', 'Ven a disfrutar de una noche elegante con nuestra Noche de Cocteles y Jazz. Degusta una selección exclusiva de cocteles artesanales preparados por nuestros expertos mixólogos mientras te relajas con música jazz en vivo. Un ambiente sofisticado y relajante para una velada inolvidable.', TO_DATE('2024-07-21', 'YYYY-MM-DD'), TO_TIMESTAMP('21-07-2024 19:00:00', 'DD-MM-YYYY HH24:MI:SS'));
 
 -- Insertar en Promociones
 INSERT INTO Promociones (id_local, nombre, descripcion, fecha_inicio, fecha_fin, estado) VALUES (1, 'Happy Hour', '2x1 en cocteles', TO_DATE('2024-07-01', 'YYYY-MM-DD'), TO_DATE('2024-07-31', 'YYYY-MM-DD'), 'Activa');
@@ -161,12 +164,12 @@ INSERT INTO Promociones (id_local, nombre, descripcion, fecha_inicio, fecha_fin,
 
 -- Insertar en Ubicación
 INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (1, 'San José', 'Av. 7, Barrio Escalante');
-INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (2, 'Cartago', '1500 metros de la iglesia católica del barrio San José');
+INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (2, 'Cartago', 'Centro en Cartago, 300 Metros al Sur, 100 Metros al Este, Del McDonald´s');
 INSERT INTO Ubicacion (id_local, provincia, direccion) VALUES (2, 'Alajuela', '1500 metros de la iglesia católica del barrio San José');
 
 -----------------------------------
 
-SELECT * FROM Ubicacion WHERE id_local = 2;
+SELECT * FROM Ubicacion;
 SELECT * FROM Categoria;
 SELECT * FROM Usuarios;
 SELECT * FROM Locales;
@@ -190,11 +193,12 @@ DROP TABLE Categoria CASCADE CONSTRAINTS;
 DROP TABLE Usuarios CASCADE CONSTRAINTS;
 DROP TABLE Ubicacion CASCADE CONSTRAINTS;
 
+
 ---------------------------------------------------
 --PROCEDIMEINTOS ALMACENADOS--
 ---------------------------------------------------
 
---SP para obtener todos los locales
+-- SP para obtener todos los locales
 CREATE OR REPLACE PROCEDURE C##eataway.ObtenerLocalesSP(p_cursor OUT SYS_REFCURSOR) AS
 BEGIN
   OPEN p_cursor FOR
@@ -205,250 +209,517 @@ BEGIN
     LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria;
 END;
 
-CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_LOCALES_OBTENER AS
-  PROCEDURE ObtenerLocalesSP(p_cursor OUT SYS_REFCURSOR);
-END PCK_EATAWAY_LOCALES_OBTENER;
+-- SP para obtener un local por ID
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerLocalPorID(
+  p_id_local IN C##eataway.Locales.id_local%TYPE,
+  p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT l.id_local, l.nombre, l.id_categoria, l.descripcion, 
+           c.tipo AS tipo, 
+           (SELECT ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto,
+           co.telefono, co.email, co.instagram
+    FROM C##eataway.Locales l
+    LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria
+    LEFT JOIN C##eataway.Contactos co ON l.id_local = co.id_local
+    WHERE l.id_local = p_id_local;
+END;
 
-CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_LOCALES_OBTENER AS
+-- SP para obtener eventos especiales
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerEventosEspecialesSP(p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT e.id_evento, e.nombre_evento, e.descripcion, e.fecha_evento, e.hora_evento, 
+           l.nombre AS nombre_local
+    FROM C##eataway.EventosEspeciales e
+    LEFT JOIN C##eataway.Locales l ON e.id_local = l.id_local;
+END;
+
+-- SP para obtener todas las reseñas de un local específico con nombre completo de usuario y foto de usuario
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorLocalSP(
+    p_id_local IN NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT r.id_resena, r.id_local, r.calificacion, r.comentario,
+           u.nombre || ' ' || u.primer_apellido || ' ' || u.segundo_apellido AS nombre_completo,
+           u.username AS nombre_usuario,
+           u.foto AS foto_usuario
+    FROM C##eataway.Resenas r
+    LEFT JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
+    WHERE r.id_local = p_id_local;
+END;
+
+-- SP para insertar una reseña
+CREATE OR REPLACE PROCEDURE C##eataway.InsertarResenaSP(
+    p_id_usuario IN C##eataway.Resenas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Resenas.id_local%TYPE,
+    p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+    p_comentario IN C##eataway.Resenas.comentario%TYPE
+) AS
+BEGIN
+    INSERT INTO C##eataway.Resenas (id_usuario, id_local, calificacion, comentario)
+    VALUES (p_id_usuario, p_id_local, p_calificacion, p_comentario);
+END;
+
+-- SP para insertar una reserva
+CREATE OR REPLACE PROCEDURE C##eataway.InsertarReservaSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Reservas.id_local%TYPE,
+    p_fecha IN C##eataway.Reservas.fecha%TYPE,
+    p_hora IN C##eataway.Reservas.hora%TYPE,
+    p_numero_personas IN C##eataway.Reservas.numero_personas%TYPE,
+    p_descripcion IN C##eataway.Reservas.descripcion%TYPE
+) AS
+BEGIN
+    INSERT INTO C##eataway.Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion)
+    VALUES (p_id_usuario, p_id_local, p_fecha, p_hora, p_numero_personas, p_descripcion);
+END;
+
+-- SP para obtener las reservas por id usuario
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerReservasPorUsuarioSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT r.id_reserva, r.id_usuario, r.id_local, r.fecha, r.hora, r.numero_personas, r.descripcion,
+               l.nombre AS nombre_local
+        FROM C##eataway.Reservas r
+        LEFT JOIN C##eataway.Locales l ON r.id_local = l.id_local
+        WHERE r.id_usuario = p_id_usuario;
+END;
+
+-- SP para eliminar una reserva
+CREATE OR REPLACE PROCEDURE C##eataway.EliminarReservaSP(
+    p_id_reserva IN NUMBER
+) AS
+BEGIN
+    DELETE FROM C##eataway.Reservas
+    WHERE id_reserva = p_id_reserva;
+    COMMIT;
+END;
+
+--SP para recuperar todas las ubicaciones asociadas a un local específico
+CREATE OR REPLACE PROCEDURE ObtenerUbicacionesPorLocalSP(
+    p_id_local IN Ubicacion.id_local%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT id_ubicacion, id_local, provincia, direccion
+        FROM Ubicacion
+        WHERE id_local = p_id_local;
+END ObtenerUbicacionesPorLocalSP;
+
+--SP para Obtener Fotos por local
+CREATE OR REPLACE PROCEDURE ObtenerFotosPorLocalSP(
+    p_id_local IN Fotos.id_local%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT id_foto, id_local, ruta_foto
+    FROM Fotos
+    WHERE id_local = p_id_local;
+END ObtenerFotosPorLocalSP;
+
+--SP para obtener los locales por tipo de local
+CREATE OR REPLACE PROCEDURE ObtenerLocalesPorTipo(
+  p_tipo_establecimiento IN Categoria.tipo%TYPE,
+  p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT l.id_local, l.nombre, l.id_categoria, l.descripcion, 
+           c.tipo AS tipo, 
+           (SELECT ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto,
+           co.telefono, co.email, co.instagram
+    FROM C##eataway.Locales l
+    LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria
+    LEFT JOIN C##eataway.Contactos co ON l.id_local = co.id_local
+    WHERE c.tipo = p_tipo_establecimiento;
+END ObtenerLocalesPorTipo;
+
+--SP para obtener las categorias que existen
+CREATE OR REPLACE PROCEDURE ObtenerCategoriasSP(p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+  OPEN p_cursor FOR
+    SELECT id_categoria, tipo
+    FROM C##eataway.Categoria;
+END;
+
+--SP para obtener la reseñas pos usuario
+CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorUsuarioSP(
+    p_id_usuario IN C##eataway.Resenas.id_usuario%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT r.id_resena, r.id_usuario, r.id_local, r.calificacion, r.comentario,
+               l.nombre AS nombre_local
+        FROM C##eataway.Resenas r
+        LEFT JOIN C##eataway.Locales l ON r.id_local = l.id_local
+        WHERE r.id_usuario = p_id_usuario;
+END;
+
+-- SP para eliminar una reseña
+CREATE OR REPLACE PROCEDURE C##eataway.EliminarResenaSP(
+    p_id_resena IN NUMBER
+) AS
+BEGIN
+    DELETE FROM C##eataway.Resenas
+    WHERE id_resena = p_id_resena;
+    COMMIT;
+END;
+
+--SP para actualizar una reseña
+CREATE OR REPLACE PROCEDURE C##eataway.ActualizarResenaSP(
+    p_id_resena IN C##eataway.Resenas.id_resena%TYPE,
+    p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+    p_comentario IN C##eataway.Resenas.comentario%TYPE
+) AS
+BEGIN
+    UPDATE C##eataway.Resenas
+    SET calificacion = p_calificacion,
+        comentario = p_comentario
+    WHERE id_resena = p_id_resena;
+END;
+
+--SP para actualizar una reserva
+CREATE OR REPLACE PROCEDURE ActualizarReservaSP(
+    p_id_reserva IN C##eataway.Reservas.id_reserva%TYPE,
+    p_fecha IN C##eataway.Reservas.fecha%TYPE,
+    p_hora IN C##eataway.Reservas.hora%TYPE,
+    p_numero_personas IN C##eataway.Reservas.numero_personas%TYPE,
+    p_descripcion IN C##eataway.Reservas.descripcion%TYPE
+) AS
+BEGIN
+    UPDATE C##eataway.Reservas
+    SET fecha = p_fecha,
+        hora = p_hora,
+        numero_personas = p_numero_personas,
+        descripcion = p_descripcion
+    WHERE id_reserva = p_id_reserva;
+END;
+
+
+---------------------------------------------------
+------PAQUETES------
+---------------------------------------------------
+
+--*****Paquete para Obtener Locales*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_LOCAL_OBTENER AS
+  PROCEDURE ObtenerLocalesSP(p_cursor OUT SYS_REFCURSOR);
+  PROCEDURE ObtenerLocalPorID(
+    p_id_local IN C##eataway.Locales.id_local%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+  );
+END PCK_EATAWAY_LOCAL_OBTENER;
+
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_LOCAL_OBTENER AS
   PROCEDURE ObtenerLocalesSP(p_cursor OUT SYS_REFCURSOR) AS
   BEGIN
     OPEN p_cursor FOR
       SELECT l.id_local, l.nombre, l.id_categoria, l.descripcion, 
-           c.tipo AS tipo, 
-           (SELECT ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto
-    FROM C##eataway.Locales l
-    LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria;
+             c.tipo AS tipo, 
+             (SELECT ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto
+      FROM C##eataway.Locales l
+      LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria;
   END;
-END PCK_EATAWAY_LOCALES_OBTENER;
 
-DECLARE
-  v_cursor SYS_REFCURSOR;
-BEGIN
-  C##eataway.PCK_EATAWAY_LOCALES_OBTENER.ObtenerLocalesSP(v_cursor);
-END;
+  PROCEDURE ObtenerLocalPorID(
+    p_id_local IN C##eataway.Locales.id_local%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+  ) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT l.id_local, l.nombre, l.id_categoria, l.descripcion, 
+             c.tipo AS tipo, 
+             (SELECT ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto,
+             co.telefono, co.email, co.instagram
+      FROM C##eataway.Locales l
+      LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria
+      LEFT JOIN C##eataway.Contactos co ON l.id_local = co.id_local
+      WHERE l.id_local = p_id_local;
+  END;
+END PCK_EATAWAY_LOCAL_OBTENER;
 
----------------------------------------------------
+--*****Paquete para Obtener Eventos Especiales*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_EVENTO_OBTENER AS
+  PROCEDURE ObtenerEventosEspecialesSP(p_cursor OUT SYS_REFCURSOR);
+END PCK_EATAWAY_EVENTO_OBTENER;
 
---Sp para obtener usuarios
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerUsuariosSP(p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_usuario, username, nombre, primer_apellido, segundo_apellido, correo, foto
-    FROM C##eataway.Usuarios;
-END;
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_EVENTO_OBTENER AS
+  PROCEDURE ObtenerEventosEspecialesSP(p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT e.id_evento, e.nombre_evento, e.descripcion, e.fecha_evento, e.hora_evento, 
+             l.nombre AS nombre_local
+      FROM C##eataway.EventosEspeciales e
+      LEFT JOIN C##eataway.Locales l ON e.id_local = l.id_local;
+  END;
+END PCK_EATAWAY_EVENTO_OBTENER;
 
----------------------------------------------------
+--*****Paquete para Obtener Reseñas*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESENA_OBTENER AS
+  PROCEDURE ObtenerResenasPorLocalSP(
+    p_id_local IN NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+  );
+END PCK_EATAWAY_RESENA_OBTENER;
 
---Obtener Reservas por Usuario (id_usuario)
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerReservasPorUsuarioSP(p_usuario_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT r.id_reserva, r.id_local, l.nombre AS local_nombre, r.fecha, r.hora, r.numero_personas, r.descripcion
-    FROM C##eataway.Reservas r
-    JOIN C##eataway.Locales l ON r.id_local = l.id_local
-    WHERE r.id_usuario = p_usuario_id;
-END;
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESENA_OBTENER AS
+  PROCEDURE ObtenerResenasPorLocalSP(
+    p_id_local IN NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+  ) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT r.id_resena, r.id_local, r.calificacion, r.comentario,
+             u.nombre || ' ' || u.primer_apellido || ' ' || u.segundo_apellido AS nombre_completo,
+             u.username AS nombre_usuario,
+             u.foto AS foto_usuario
+      FROM C##eataway.Resenas r
+      LEFT JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
+      WHERE r.id_local = p_id_local;
+  END;
+END PCK_EATAWAY_RESENA_OBTENER;
 
----------------------------------------------------
+--*****Paquete para Insertar Reseñas*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESENA_INSERTAR AS
+  PROCEDURE InsertarResenaSP(
+    p_id_usuario IN C##eataway.Resenas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Resenas.id_local%TYPE,
+    p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+    p_comentario IN C##eataway.Resenas.comentario%TYPE
+  );
+END PCK_EATAWAY_RESENA_INSERTAR;
 
---Obtener reseñas por local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT r.id_resena, r.id_usuario, u.nombre || ' ' || u.primer_apellido AS usuario_nombre, r.calificacion, r.comentario
-    FROM C##eataway.Resenas r
-    JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
-    WHERE r.id_local = p_local_id;
-END;
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESENA_INSERTAR AS
+  PROCEDURE InsertarResenaSP(
+    p_id_usuario IN C##eataway.Resenas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Resenas.id_local%TYPE,
+    p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+    p_comentario IN C##eataway.Resenas.comentario%TYPE
+  ) AS
+  BEGIN
+    INSERT INTO C##eataway.Resenas (id_usuario, id_local, calificacion, comentario)
+    VALUES (p_id_usuario, p_id_local, p_calificacion, p_comentario);
+  END;
+END PCK_EATAWAY_RESENA_INSERTAR;
 
----------------------------------------------------
+--*****Paquete para Insertar Reservas*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESERVA_INSERTAR AS
+  PROCEDURE InsertarReservaSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Reservas.id_local%TYPE,
+    p_fecha IN C##eataway.Reservas.fecha%TYPE,
+    p_hora IN C##eataway.Reservas.hora%TYPE,
+    p_numero_personas IN C##eataway.Reservas.numero_personas%TYPE,
+    p_descripcion IN C##eataway.Reservas.descripcion%TYPE
+  );
+END PCK_EATAWAY_RESERVA_INSERTAR;
 
---Obtener Eventos Especiales por Local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerEventosEspecialesPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_evento, nombre_evento, descripcion, fecha_evento, hora_evento
-    FROM C##eataway.EventosEspeciales
-    WHERE id_local = p_local_id;
-END;
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESERVA_INSERTAR AS
+  PROCEDURE InsertarReservaSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_id_local IN C##eataway.Reservas.id_local%TYPE,
+    p_fecha IN C##eataway.Reservas.fecha%TYPE,
+    p_hora IN C##eataway.Reservas.hora%TYPE,
+    p_numero_personas IN C##eataway.Reservas.numero_personas%TYPE,
+    p_descripcion IN C##eataway.Reservas.descripcion%TYPE
+  ) AS
+  BEGIN
+    INSERT INTO C##eataway.Reservas (id_usuario, id_local, fecha, hora, numero_personas, descripcion)
+    VALUES (p_id_usuario, p_id_local, p_fecha, p_hora, p_numero_personas, p_descripcion);
+  END;
+END PCK_EATAWAY_RESERVA_INSERTAR;
 
----------------------------------------------------
+--*****Paquete para Obtener Reservas por Usuario*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESERVA_OBTENER AS
+  PROCEDURE ObtenerReservasPorUsuarioSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+  );
+END PCK_EATAWAY_RESERVA_OBTENER;
 
---Obtener Promociones Activas
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerPromocionesActivasSP(p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_promocion, id_local, nombre, descripcion, fecha_inicio, fecha_fin
-    FROM C##eataway.Promociones
-    WHERE estado = 'Activa' AND fecha_fin >= SYSDATE;
-END;
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESERVA_OBTENER AS
+  PROCEDURE ObtenerReservasPorUsuarioSP(
+    p_id_usuario IN C##eataway.Reservas.id_usuario%TYPE,
+    p_cursor OUT SYS_REFCURSOR
+  ) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT r.id_reserva, r.id_usuario, r.id_local, r.fecha, r.hora, r.numero_personas, r.descripcion,
+             l.nombre AS nombre_local
+      FROM C##eataway.Reservas r
+      LEFT JOIN C##eataway.Locales l ON r.id_local = l.id_local
+      WHERE r.id_usuario = p_id_usuario;
+  END;
+END PCK_EATAWAY_RESERVA_OBTENER;
 
+--*****Paquete para Eliminar Reservas*****-
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESERVA_ELIMINAR AS
+  PROCEDURE EliminarReservaSP(
+    p_id_reserva IN NUMBER
+  );
+END PCK_EATAWAY_RESERVA_ELIMINAR;
 
----------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESERVA_ELIMINAR AS
+  PROCEDURE EliminarReservaSP(
+    p_id_reserva IN NUMBER
+  ) AS
+  BEGIN
+    DELETE FROM C##eataway.Reservas
+    WHERE id_reserva = p_id_reserva;
+    COMMIT;
+  END;
+END PCK_EATAWAY_RESERVA_ELIMINAR;
 
---Obtener locales por Categoria
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerLocalesPorNombreCategoriaSP(p_categoria_nombre VARCHAR2, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT l.id_local, l.nombre, l.descripcion, c.tipo AS tipo
-    FROM C##eataway.Locales l
-    JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria
-    WHERE c.tipo = p_categoria_nombre;
-END;
+--*****Paquete para obtener los locale por categoria*****--
+CREATE OR REPLACE PACKAGE PCK_EATAWAY_LOCAL_OBTENER_TIPO AS
+    PROCEDURE ObtenerLocalesPorTipo(
+        tipoEstablecimiento IN VARCHAR2,
+        localesCursor OUT SYS_REFCURSOR
+    );
+END PCK_EATAWAY_LOCAL_OBTENER_TIPO;
 
----------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY PCK_EATAWAY_LOCAL_OBTENER_TIPO AS
 
---Obtener Fotos de un Local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerFotosDeLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_foto, ruta_foto
-    FROM C##eataway.Fotos
-    WHERE id_local = p_local_id;
-END;
+    PROCEDURE ObtenerLocalesPorTipo(
+        tipoEstablecimiento IN VARCHAR2,
+        localesCursor OUT SYS_REFCURSOR
+    ) IS
+    BEGIN
+        OPEN localesCursor FOR
+        SELECT l.id_local, l.nombre, l.id_categoria, l.descripcion, 
+               c.tipo AS tipo, 
+               (SELECT ruta_foto FROM Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto,
+               co.telefono, co.email, co.instagram
+        FROM Locales l
+        LEFT JOIN Categoria c ON l.id_categoria = c.id_categoria
+        LEFT JOIN Contactos co ON l.id_local = co.id_local
+        WHERE c.tipo = tipoEstablecimiento;
+    END ObtenerLocalesPorTipo;
 
----------------------------------------------------
+END PCK_EATAWAY_LOCAL_OBTENER_TIPO;
 
---Obtener Número de Reservas por Local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerNumeroReservasPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT COUNT(*) AS numero_reservas
-    FROM C##eataway.Reservas
-    WHERE id_local = p_local_id;
-END;
+--*****Paquete para eliminar reseñas*****--
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESENA_ELIMINAR IS
+    PROCEDURE EliminarResenaSP(p_id_resena IN NUMBER);
+END PCK_EATAWAY_RESENA_ELIMINAR;
 
----------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESENA_ELIMINAR IS
 
---Obtener Reseñas por Usuario
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerResenasPorUsuarioSP(p_usuario_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT r.id_resena, r.id_local, l.nombre AS local_nombre, r.calificacion, r.comentario
-    FROM C##eataway.Resenas r
-    JOIN C##eataway.Locales l ON r.id_local = l.id_local
-    WHERE r.id_usuario = p_usuario_id;
-END;
+    PROCEDURE EliminarResenaSP(p_id_resena IN NUMBER) IS
+    BEGIN
+        DELETE FROM C##eataway.Resenas
+        WHERE id_resena = p_id_resena;
+        COMMIT;
+    END EliminarResenaSP;
 
----------------------------------------------------
+END PCK_EATAWAY_RESENA_ELIMINAR;
 
---Obtener Promociones por Local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerPromocionesPorLocalSP(p_local_id NUMBER, p_cursor OUT SYS_REFCURSOR) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_promocion, nombre, descripcion, fecha_inicio, fecha_fin, estado
-    FROM C##eataway.Promociones
-    WHERE id_local = p_local_id;
-END;
+--*****Paquete para actualizar reseñas*****--
+CREATE OR REPLACE PACKAGE C##eataway.PCK_EATAWAY_RESENA_ACTUALIZAR IS
+    PROCEDURE ActualizarResenaSP(
+        p_id_resena IN C##eataway.Resenas.id_resena%TYPE,
+        p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+        p_comentario IN C##eataway.Resenas.comentario%TYPE
+    );
+END PCK_EATAWAY_RESENA_ACTUALIZAR;
 
----------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY C##eataway.PCK_EATAWAY_RESENA_ACTUALIZAR IS
 
---Obtener Ubicación y Contacto de los Locales
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerUbicacionYContactoPorLocalSP(
-  p_local_id NUMBER, 
-  p_cursor OUT SYS_REFCURSOR
-) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT 
-      l.id_local, 
-      l.nombre AS local_nombre,
-      u.provincia, 
-      u.direccion,
-      c.telefono,
-      c.email,
-      c.instagram
-    FROM C##eataway.Locales l
-    JOIN C##eataway.Ubicacion u ON l.id_local = u.id_local
-    LEFT JOIN C##eataway.Contactos c ON l.id_local = c.id_local
-    WHERE l.id_local = p_local_id;
-END;
+    PROCEDURE ActualizarResenaSP(
+        p_id_resena IN C##eataway.Resenas.id_resena%TYPE,
+        p_calificacion IN C##eataway.Resenas.calificacion%TYPE,
+        p_comentario IN C##eataway.Resenas.comentario%TYPE
+    ) IS
+    BEGIN
+        UPDATE C##eataway.Resenas
+        SET calificacion = p_calificacion,
+            comentario = p_comentario
+        WHERE id_resena = p_id_resena;
+    END ActualizarResenaSP;
 
----------------------------------------------------
+END PCK_EATAWAY_RESENA_ACTUALIZAR;
 
---Obtener Todas las Ubicaciones de un Local
-CREATE OR REPLACE PROCEDURE C##eataway.ObtenerTodasUbicacionesPorLocalSP(
-  p_local_id NUMBER, 
-  p_cursor OUT SYS_REFCURSOR
-) AS
-BEGIN
-  OPEN p_cursor FOR
-    SELECT id_ubicacion, provincia, direccion
-    FROM C##eataway.Ubicacion
-    WHERE id_local = p_local_id;
-END;
+--*****Paquete para *****--
+
 
 ---------------------------------------------------
 --VISTAS--
 ---------------------------------------------------
 
---Vista de Locales con Categoría y Foto
-CREATE OR REPLACE VIEW C##eataway.V_LocalesConCategoriaYFoto AS
-SELECT 
-    l.id_local,
-    l.nombre AS local_nombre,
-    l.descripcion,
-    c.tipo AS categoria,
-    (SELECT f.ruta_foto FROM C##eataway.Fotos f WHERE f.id_local = l.id_local AND ROWNUM = 1) AS foto_principal
-FROM C##eataway.Locales l
-LEFT JOIN C##eataway.Categoria c ON l.id_categoria = c.id_categoria;
+-- Vista de usuarios con sus reseñas y calificaciones
+CREATE VIEW Vista_Usuarios_Resenas AS
+SELECT u.id_usuario, u.username, u.nombre, u.primer_apellido, u.correo, r.calificacion, r.comentario
+FROM Usuarios u
+JOIN Resenas r ON u.id_usuario = r.id_usuario;
 
----------------------------------------------------
+-- Vista de locales con sus eventos especiales
+CREATE VIEW Vista_Locales_Eventos AS
+SELECT l.id_local, l.nombre AS nombre_local, e.nombre_evento, e.descripcion, e.fecha_evento, e.hora_evento
+FROM Locales l
+JOIN EventosEspeciales e ON l.id_local = e.id_local;
 
---Vista de Reservas con Información de Usuario y Local
-CREATE OR REPLACE VIEW C##eataway.V_ReservasConUsuarioYLocal AS
-SELECT 
-    r.id_reserva,
-    r.fecha,
-    r.hora,
-    r.numero_personas,
-    r.descripcion AS reserva_descripcion,
-    u.nombre || ' ' || u.primer_apellido AS usuario_nombre,
-    l.nombre AS local_nombre
-FROM C##eataway.Reservas r
-JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
-JOIN C##eataway.Locales l ON r.id_local = l.id_local;
-
----------------------------------------------------
-
---Vista de Reseñas con Información de Usuario y Local
-CREATE OR REPLACE VIEW C##eataway.V_ResenasConUsuarioYLocal AS
-SELECT 
-    r.id_resena,
-    r.calificacion,
-    r.comentario,
-    u.nombre || ' ' || u.primer_apellido AS usuario_nombre,
-    l.nombre AS local_nombre
-FROM C##eataway.Resenas r
-JOIN C##eataway.Usuarios u ON r.id_usuario = u.id_usuario
-JOIN C##eataway.Locales l ON r.id_local = l.id_local;
-
----------------------------------------------------
-
---Vista de Eventos Especiales con Información de Local
-CREATE OR REPLACE VIEW C##eataway.V_EventosEspecialesConLocal AS
-SELECT 
-    e.id_evento,
-    e.nombre_evento,
-    e.descripcion AS evento_descripcion,
-    e.fecha_evento,
-    e.hora_evento,
-    l.nombre AS local_nombre
-FROM C##eataway.EventosEspeciales e
-JOIN C##eataway.Locales l ON e.id_local = l.id_local;
-
----------------------------------------------------
-
---Vista de Promociones Activas con Información de Local
-CREATE OR REPLACE VIEW C##eataway.V_PromocionesActivasConLocal AS
-SELECT 
-    p.id_promocion,
-    p.nombre AS promocion_nombre,
-    p.descripcion AS promocion_descripcion,
-    p.fecha_inicio,
-    p.fecha_fin,
-    l.nombre AS local_nombre
-FROM C##eataway.Promociones p
-JOIN C##eataway.Locales l ON p.id_local = l.id_local
+-- Vista de promociones activas para cada local
+CREATE VIEW Vista_Promociones_Activas AS
+SELECT l.nombre AS nombre_local, p.nombre AS nombre_promocion, p.descripcion, p.fecha_inicio, p.fecha_fin
+FROM Locales l
+JOIN Promociones p ON l.id_local = p.id_local
 WHERE p.estado = 'Activa';
 
+-- Vista de contactos de locales
+CREATE VIEW Vista_Contactos_Locales AS
+SELECT l.nombre AS nombre_local, c.telefono, c.email, c.instagram
+FROM Locales l
+JOIN Contactos c ON l.id_local = c.id_local;
+
+-- Vista de usuarios con sus reservas
+CREATE VIEW Vista_Usuarios_Reservas AS
+SELECT u.id_usuario, u.username, u.nombre, r.fecha, r.hora, r.numero_personas, r.descripcion
+FROM Usuarios u
+JOIN Reservas r ON u.id_usuario = r.id_usuario;
+
+-- Vista de locales con sus reseñas y calificaciones promedio
+CREATE VIEW Vista_Locales_Calificacion_Promedio AS
+SELECT l.id_local, l.nombre AS nombre_local, AVG(r.calificacion) AS calificacion_promedio
+FROM Locales l
+JOIN Resenas r ON l.id_local = r.id_local
+GROUP BY l.id_local, l.nombre;
+
+-- Vista de fotos de locales
+CREATE VIEW Vista_Fotos_Locales AS
+SELECT l.id_local, l.nombre AS nombre_local, f.ruta_foto
+FROM Locales l
+JOIN Fotos f ON l.id_local = f.id_local;
+
+-- Vista de ubicaciones de locales
+CREATE VIEW Vista_Ubicaciones_Locales AS
+SELECT l.id_local, l.nombre AS nombre_local, u.provincia, u.direccion
+FROM Locales l
+JOIN Ubicacion u ON l.id_local = u.id_local;
+
+-- Vista de reservas para un local específico (ID 1)
+CREATE VIEW Vista_Reservas_Local_Especifico AS
+SELECT r.id_reserva, r.fecha, r.hora, r.numero_personas, r.descripcion, u.username
+FROM Reservas r
+JOIN Usuarios u ON r.id_usuario = u.id_usuario
+WHERE r.id_local = 1;
+
+-- Vista de detalles completos de un local
+CREATE VIEW Vista_Detalles_Local AS
+SELECT l.id_local, l.nombre AS nombre_local, c.tipo AS categoria, 
+       con.telefono, con.email, con.instagram, 
+       u.provincia, u.direccion,
+       e.nombre_evento, e.fecha_evento, e.hora_evento
+FROM Locales l
+LEFT JOIN Categoria c ON l.id_categoria = c.id_categoria
+LEFT JOIN Contactos con ON l.id_local = con.id_local
+LEFT JOIN Ubicacion u ON l.id_local = u.id_local
+LEFT JOIN EventosEspeciales e ON l.id_local = e.id_local;

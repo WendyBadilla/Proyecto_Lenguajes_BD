@@ -13,4 +13,8 @@ public interface ReservaService {
     List<Reserva> obtenerReservasPorUsuario(HttpSession session);
     
     public void eliminarReserva(Reserva reserva);
+    
+    public void editarReserva(Reserva reserva);
+    
+    public Reserva getReservaID(long id);
 }

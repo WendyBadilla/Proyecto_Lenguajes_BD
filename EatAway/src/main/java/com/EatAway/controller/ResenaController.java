@@ -44,7 +44,7 @@ public class ResenaController {
     }
     
     @PostMapping("/editarReseña")
-    public String editarProducto(Resena resena){
+    public String editarResena(Resena resena){
         resenaService.editarResena(resena);
         return "redirect:/resenas";
     }

@@ -62,4 +62,20 @@ public class ReservaController {
         return "redirect:/reservas";
     }
     
+    @GetMapping("/reservas/actualizar/{idReserva}")
+    public String reservaEditar(@PathVariable("idReserva") long idReserva, Reserva reserva, Model model) {
+        
+        Reserva reservaDetails = reservaService.getReservaID(idReserva);
+        
+        model.addAttribute("reservas", reservaDetails);
+        
+        return "/reserva/modifica";
+    }
+    
+    @PostMapping("/editarReserva")
+    public String editarReserva(Reserva reserva){
+        reservaService.editarReserva(reserva);
+        return "redirect:/reservas";
+    }
+    
 }

@@ -119,4 +119,71 @@ public class ReservaServiceImpl implements ReservaService {
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public Reserva getReservaID(long idReserva) {
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String user = "C##eataway";
+        String password = "sws2024";
+
+        Reserva reserva = new Reserva(); // Crear un objeto Reserva para devolver
+
+        try (Connection conexion = DriverManager.getConnection(jdbcUrl, user, password)) {
+            String callStatement = "{call ObtenerReservaPorId(?, ?)}";
+
+            try (CallableStatement llamadaExecute = conexion.prepareCall(callStatement)) {
+                // Establecimiento del parámetro de entrada
+                llamadaExecute.setLong(1, idReserva);
+                // Registro del parámetro de salida
+                llamadaExecute.registerOutParameter(2, OracleTypes.CURSOR);
+
+                llamadaExecute.execute();
+                try (ResultSet resultSet = (ResultSet) llamadaExecute.getObject(2)) {
+                    if (resultSet.next()) {
+                        reserva.setIdReserva(resultSet.getLong("id_reserva"));
+                        reserva.setIdUsuario(resultSet.getInt("id_usuario"));
+                        reserva.setIdLocal(resultSet.getInt("id_local"));
+                        reserva.setFecha(resultSet.getDate("fecha"));
+                        reserva.setHora(resultSet.getString("hora"));
+                        reserva.setNumeroPersonas(resultSet.getInt("numero_personas"));
+                        reserva.setDescripcion(resultSet.getString("descripcion"));
+                        reserva.setNombreLocal(resultSet.getString("nombre_local"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reserva;
+    }
+    
+    @Override
+    public void editarReserva(Reserva reserva) {
+        
+        
+        String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+
+  
+        try (Connection conexion = DriverManager.getConnection(jdbcUrl, "C##eataway", "sws2024")) {
+            
+            String callStatement = "{ call ActualizarReservaSP(?, ?, ?, ?, ?) }";
+            
+            System.out.println("Edicion mediante SP");
+
+            try (CallableStatement callableStatement = conexion.prepareCall(callStatement)) {
+                callableStatement.setInt(1, reserva.getIdReserva().intValue());
+                callableStatement.setDate(2, reserva.getFecha());
+                callableStatement.setString(3, reserva.getHora());
+                callableStatement.setInt(4, reserva.getNumeroPersonas());
+                callableStatement.setString(5, reserva.getDescripcion());
+
+                callableStatement.execute();
+                System.out.println("Stored procedure executed successfully.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error detected");
+            e.printStackTrace();
+        }   
+    }
 }

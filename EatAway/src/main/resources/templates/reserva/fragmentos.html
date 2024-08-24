@@ -100,7 +100,11 @@
                             <!-- Botón de Cancelar -->
                             <div class=" ml-auto">
                                 <a th:href="@{/reservas/eliminar/}+${reserva.idReserva}">
-                                <button type="button" class="btn" style="background-color: black; color: white; border-radius: 25px; width: 200px;" th:text="#{reserva.cancelar}"></button>
+                                    <button type="button" class="btn" style="background-color: gray; color: white; border-radius: 25px; width: 200px;" th:text="#{reserva.cancelar}"></button>
+                                </a>
+                                </br></br>
+                                <a th:href="@{/reservas/actualizar/}+${reserva.idReserva}">
+                                    <button type="button" class="btn" style="background-color: black; color: white; border-radius: 25px; width: 200px;" th:text="#{reserva.actualizar}"></button>
                                 </a>
                             </div>
                             <hr class="my-4">
@@ -112,6 +116,66 @@
                     </p>
                 </div>
             </div>
+        </section>
+        
+        <section th:fragment="editarReserva">
+            <div id="details" class="contenedor">
+                <div class="row">                    
+                    <div class="col-md-9">
+                        <div class="col derecha">                    
+                            <div class="mb-3">
+                                <p class="nombreFuente">[[#{reserva.titulo}]]</p>
+                            </div>
+                            <hr class="my-4">
+                                <div class="mb-1">
+                                    <h6 style="display: inline-block; margin-right: 10px;">[[#{detalle.nombre}]]</h6>
+                                    <p style="display: inline-block;" th:text="${reservas.nombreLocal}"></p>                                    
+                                </div>
+                                <form th:action="@{/editarReserva}" th:object="${reservas}" method="POST" class="was-validated" enctype="multipart/form-data">                
+                                    <input hidden name="idReserva" th:value="${reservas.idReserva}"/>
+                                    <div class="mb-3">
+                                        <label for="numeroPersonas">[[#{reserva.persona}]]</label>
+                                        <select class="form-control" th:field="*{numeroPersonas}" name="numeroPersonas" required="true" style="width: 500px;">
+                                            <option value="1">1 persona</option>
+                                            <option value="2">2 personas</option>
+                                            <option value="3">3 personas</option>
+                                            <option value="4">4 personas</option>
+                                            <option value="5">5 personas</option>
+                                            <option value="6">Más de 5</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fecha">[[#{reserva.fecha}]]</label>
+                                        <input type="date" class="form-control" name="fecha" th:field="*{fecha}" required="true" style="width: 500px;"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="hora">[[#{reserva.hora}]]</label>
+                                        <select class="form-control" name="hora" th:field="*{hora}" required="true" style="width: 500px;">
+                                            <option value="05:00 pm">05:00 pm</option>
+                                            <option value="05:30 pm">05:30 pm</option>
+                                            <option value="06:30 pm">06:30 pm</option>                                        
+                                            <option value="07:30 pm">07:30 pm</option>                                        
+                                            <option value="08:00 pm">08:30 pm</option>                                        
+                                            <option value="09:00 pm">09:00 pm</option>                                        
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <textarea class="form-control" name="descripcion"
+                                                  th:field="*{descripcion}" required="true" style="width: 500px;"></textarea>
+
+                                    </div>
+                                    <br>
+                                        <div>
+                                            <button class="btn" type="submit" style="background-color: #F54D33; color: white; border-radius: 25px; width: 200px;">
+                                                [[#{accion.enviareserva}]]
+                                            </button>
+                                        </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
         </section>
 
     </body>

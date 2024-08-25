@@ -471,6 +471,162 @@ BEGIN
         p.fecha_inicio DESC;
 END;
 
+-- SP para insertar un nuevo usuario
+CREATE OR REPLACE PROCEDURE InsertarUsuarioSP(
+    p_username IN Usuarios.username%TYPE,
+    p_nombre IN Usuarios.nombre%TYPE,
+    p_primer_apellido IN Usuarios.primer_apellido%TYPE,
+    p_segundo_apellido IN Usuarios.segundo_apellido%TYPE,
+    p_correo IN Usuarios.correo%TYPE,
+    p_password IN Usuarios.password%TYPE,
+    p_foto IN Usuarios.foto%TYPE
+) AS
+BEGIN
+    INSERT INTO Usuarios (
+        username, nombre, primer_apellido, segundo_apellido, correo, password, foto
+    ) VALUES (
+        p_username, p_nombre, p_primer_apellido, p_segundo_apellido, p_correo, p_password, p_foto
+    );
+END InsertarUsuarioSP;
+
+-- SP para obtener un usuario por ID
+CREATE OR REPLACE PROCEDURE ObtenerUsuarioPorIDSP(
+    p_id_usuario IN Usuarios.id_usuario%TYPE,
+    p_username OUT Usuarios.username%TYPE,
+    p_nombre OUT Usuarios.nombre%TYPE,
+    p_primer_apellido OUT Usuarios.primer_apellido%TYPE,
+    p_segundo_apellido OUT Usuarios.segundo_apellido%TYPE,
+    p_correo OUT Usuarios.correo%TYPE,
+    p_password OUT Usuarios.password%TYPE,
+    p_foto OUT Usuarios.foto%TYPE
+) AS
+BEGIN
+    SELECT username, nombre, primer_apellido, segundo_apellido, correo, password, foto
+    INTO p_username, p_nombre, p_primer_apellido, p_segundo_apellido, p_correo, p_password, p_foto
+    FROM Usuarios
+    WHERE id_usuario = p_id_usuario;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        p_username := NULL;
+        p_nombre := NULL;
+        p_primer_apellido := NULL;
+        p_segundo_apellido := NULL;
+        p_correo := NULL;
+        p_password := NULL;
+        p_foto := NULL;
+END ObtenerUsuarioPorIDSP;
+
+-- SP para actualizar un usuario existente
+CREATE OR REPLACE PROCEDURE ActualizarUsuarioSP(
+    p_id_usuario IN Usuarios.id_usuario%TYPE,
+    p_username IN Usuarios.username%TYPE,
+    p_nombre IN Usuarios.nombre%TYPE,
+    p_primer_apellido IN Usuarios.primer_apellido%TYPE,
+    p_segundo_apellido IN Usuarios.segundo_apellido%TYPE,
+    p_correo IN Usuarios.correo%TYPE,
+    p_password IN Usuarios.password%TYPE,
+    p_foto IN Usuarios.foto%TYPE
+) AS
+BEGIN
+    UPDATE Usuarios
+    SET
+        username = p_username,
+        nombre = p_nombre,
+        primer_apellido = p_primer_apellido,
+        segundo_apellido = p_segundo_apellido,
+        correo = p_correo,
+        password = p_password,
+        foto = p_foto
+    WHERE id_usuario = p_id_usuario;
+END ActualizarUsuarioSP;
+
+-- SP para eliminar un usuario por ID
+CREATE OR REPLACE PROCEDURE EliminarUsuarioSP(
+    p_id_usuario IN Usuarios.id_usuario%TYPE
+) AS
+BEGIN
+    DELETE FROM Usuarios
+    WHERE id_usuario = p_id_usuario;
+END EliminarUsuarioSP;
+
+-- SP para insertar un nuevo local junto con su contacto, una foto y ubicación
+CREATE OR REPLACE PROCEDURE InsertarLocalSP(
+    p_nombre IN Locales.nombre%TYPE,
+    p_id_categoria IN Locales.id_categoria%TYPE,
+    p_descripcion IN Locales.descripcion%TYPE,
+    p_contacto_telefono IN Contactos.telefono%TYPE,
+    p_contacto_email IN Contactos.email%TYPE,
+    p_contacto_instagram IN Contactos.instagram%TYPE,
+    p_foto IN Fotos.ruta_foto%TYPE,  -- URL de la foto
+    p_provincia IN Ubicacion.provincia%TYPE,
+    p_direccion IN Ubicacion.direccion%TYPE
+) AS
+    v_id_local Locales.id_local%TYPE;
+BEGIN
+    -- Insertar el nuevo local
+    INSERT INTO Locales (nombre, id_categoria, descripcion)
+    VALUES (p_nombre, p_id_categoria, p_descripcion)
+    RETURNING id_local INTO v_id_local;
+
+    -- Insertar el contacto asociado al nuevo local
+    INSERT INTO Contactos (id_local, telefono, email, instagram)
+    VALUES (v_id_local, p_contacto_telefono, p_contacto_email, p_contacto_instagram);
+
+    -- Insertar la foto asociada al nuevo local
+    INSERT INTO Fotos (id_local, ruta_foto)
+    VALUES (v_id_local, p_foto);
+
+    -- Insertar la ubicación asociada al nuevo local
+    INSERT INTO Ubicacion (id_local, provincia, direccion)
+    VALUES (v_id_local, p_provincia, p_direccion);
+    
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END InsertarLocalSP;
+
+-- SP para agregar varias fotos a un local
+CREATE OR REPLACE PROCEDURE AgregarFotosALocalSP(
+    p_id_local IN Fotos.id_local%TYPE,  
+    p_fotos IN SYS.ODCIVARCHAR2LIST 
+) AS
+BEGIN
+    FOR i IN 1 .. p_fotos.COUNT LOOP
+        INSERT INTO Fotos (id_local, ruta_foto)
+        VALUES (p_id_local, p_fotos(i));
+    END LOOP;
+    
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END AgregarFotosALocalSP;
+
+-- SP para agregar varias ubicaciones a un local
+CREATE OR REPLACE PROCEDURE AgregarUbicacionesALocalSP(
+    p_id_local IN Ubicacion.id_local%TYPE,
+    p_provincias IN SYS.ODCIVARCHAR2LIST,
+    p_direcciones IN SYS.ODCIVARCHAR2LIST 
+) AS
+BEGIN
+    IF p_provincias.COUNT != p_direcciones.COUNT THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Las listas de provincias y direcciones deben tener el mismo tamaño.');
+    END IF;
+    
+    FOR i IN 1 .. p_provincias.COUNT LOOP
+        INSERT INTO Ubicacion (id_local, provincia, direccion)
+        VALUES (p_id_local, p_provincias(i), p_direcciones(i));
+    END LOOP;
+    
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END AgregarUbicacionesALocalSP;
 
 
 
@@ -791,3 +947,255 @@ LEFT JOIN Categoria c ON l.id_categoria = c.id_categoria
 LEFT JOIN Contactos con ON l.id_local = con.id_local
 LEFT JOIN Ubicacion u ON l.id_local = u.id_local
 LEFT JOIN EventosEspeciales e ON l.id_local = e.id_local;
+
+---------------------------------------------------
+--FUNCIONES--
+---------------------------------------------------
+
+-- Función para obtener la información de un usuario por su ID
+CREATE OR REPLACE FUNCTION obtener_informacion_usuario(p_id_usuario NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Usuarios WHERE id_usuario = p_id_usuario;
+    RETURN ref_cursor;
+END;
+
+-- Función para obtener la información de un local por su ID
+CREATE OR REPLACE FUNCTION obtener_informacion_local(p_id_local NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Locales WHERE id_local = p_id_local;
+    RETURN ref_cursor;
+END;
+
+-- Función para calcular el promedio de calificación de un local
+CREATE OR REPLACE FUNCTION calcular_promedio_calificacion(p_id_local NUMBER) 
+RETURN NUMBER AS
+    avg_calificacion NUMBER;
+BEGIN
+    SELECT AVG(calificacion) INTO avg_calificacion
+    FROM Resenas
+    WHERE id_local = p_id_local;
+    RETURN avg_calificacion;
+END;
+
+-- Función para contar el número de reservas en una fecha específica
+CREATE OR REPLACE FUNCTION contar_reservas_fecha(p_fecha DATE) 
+RETURN NUMBER AS
+    total_reservas NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO total_reservas
+    FROM Reservas
+    WHERE fecha = p_fecha;
+    RETURN total_reservas;
+END;
+
+-- Función para obtener eventos especiales en una fecha específica
+CREATE OR REPLACE FUNCTION obtener_eventos_especiales(p_fecha DATE) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM EventosEspeciales 
+    WHERE fecha_evento = p_fecha;
+    RETURN ref_cursor;
+END;
+
+-- Función para obtener todas las fotos de un local
+CREATE OR REPLACE FUNCTION obtener_fotos_local(p_id_local NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Fotos WHERE id_local = p_id_local;
+    RETURN ref_cursor;
+END;
+
+-- Función para obtener la ubicación de un local
+CREATE OR REPLACE FUNCTION obtener_ubicacion_local(p_id_local NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Ubicacion WHERE id_local = p_id_local;
+    RETURN ref_cursor;
+END;
+
+-- Función para obtener promociones activas en un local
+CREATE OR REPLACE FUNCTION obtener_promociones_activas(p_id_local NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Promociones 
+    WHERE id_local = p_id_local AND estado = 'Activa';
+    RETURN ref_cursor;
+END;
+
+-- Función para validar si un usuario tiene reservas en un local
+CREATE OR REPLACE FUNCTION tiene_reservas_local(p_id_usuario NUMBER, p_id_local NUMBER) 
+RETURN BOOLEAN AS
+    total_reservas NUMBER;
+BEGIN
+    -- Contar el número de reservas para el usuario en el local especificado
+    SELECT COUNT(*) INTO total_reservas
+    FROM Reservas
+    WHERE id_usuario = p_id_usuario AND id_local = p_id_local;
+    
+    -- Devolver TRUE si hay reservas, FALSE en caso contrario
+    RETURN total_reservas > 0;
+END;
+
+-- Función para obtener los datos de contacto de un local
+CREATE OR REPLACE FUNCTION obtener_contactos_local(p_id_local NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Contactos WHERE id_local = p_id_local;
+    RETURN ref_cursor;
+END;
+
+-- Función para contar el número de reseñas para un local
+CREATE OR REPLACE FUNCTION contar_resenas_local(p_id_local NUMBER) 
+RETURN NUMBER AS
+    total_resenas NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO total_resenas
+    FROM Resenas
+    WHERE id_local = p_id_local;
+    RETURN total_resenas;
+END;
+
+-- Función para obtener usuarios por nombre (parcial)
+CREATE OR REPLACE FUNCTION obtener_usuarios_por_nombre(p_nombre VARCHAR2) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Usuarios WHERE nombre LIKE '%' || p_nombre || '%';
+    RETURN ref_cursor;
+END;
+
+-- Función para obtener locales por categoría
+CREATE OR REPLACE FUNCTION obtener_locales_por_categoria(p_id_categoria NUMBER) 
+RETURN SYS_REFCURSOR AS
+    ref_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN ref_cursor FOR 
+    SELECT * FROM Locales WHERE id_categoria = p_id_categoria;
+    RETURN ref_cursor;
+END;
+
+--Función para calcular el promedio de número de personas por reserva en el local especificado
+CREATE OR REPLACE FUNCTION promedio_personas_por_reserva(p_id_local NUMBER)
+RETURN NUMBER AS
+    promedio NUMBER;
+BEGIN    
+    SELECT AVG(numero_personas) INTO promedio
+    FROM Reservas
+    WHERE id_local = p_id_local;
+
+    RETURN promedio;
+END;
+
+--Función para calcular el promedio de las calificaciones para el local especificado
+CREATE OR REPLACE FUNCTION calificacion_media_local(p_id_local NUMBER)
+RETURN NUMBER AS
+    promedio_calificacion NUMBER;
+BEGIN
+    SELECT AVG(calificacion) INTO promedio_calificacion
+    FROM Resenas
+    WHERE id_local = p_id_local;
+
+    RETURN promedio_calificacion;
+END;
+
+--Función para encontrar la categoría con el mayor número de reservas
+CREATE OR REPLACE FUNCTION categoria_mas_reservada
+RETURN VARCHAR2 AS
+    v_categoria VARCHAR2(50);
+BEGIN    
+    SELECT c.tipo
+    INTO v_categoria
+    FROM Categoria c
+    JOIN Locales l ON c.id_categoria = l.id_categoria
+    JOIN Reservas r ON l.id_local = r.id_local
+    GROUP BY c.tipo
+    ORDER BY COUNT(r.id_reserva) DESC
+    FETCH FIRST 1 ROW ONLY;
+
+    RETURN v_categoria;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+
+---------------------------------------------------
+--TRIGGERS--
+---------------------------------------------------
+
+--Trigger asegura que las reservas no se puedan hacer para fechas anteriores a la fecha actual.
+CREATE OR REPLACE TRIGGER trg_check_fecha_reserva
+BEFORE INSERT ON Reservas
+FOR EACH ROW
+BEGIN
+    IF :NEW.fecha < TRUNC(SYSDATE) THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No se puede hacer una reserva para una fecha pasada.');
+    END IF;
+END;
+
+--Trigger si se intenta insertar una calificación fuera del rango.
+CREATE OR REPLACE TRIGGER trg_validar_calificacion
+BEFORE INSERT OR UPDATE ON Resenas
+FOR EACH ROW
+BEGIN
+    IF :NEW.calificacion < 1 OR :NEW.calificacion > 5 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'La calificación debe estar entre 1 y 5.');
+    END IF;
+END;
+
+--Trigger para actualizar el estado de las promociones que ya han pasado su fecha de fin
+CREATE OR REPLACE TRIGGER trg_actualizar_estado_promociones
+AFTER INSERT OR UPDATE ON Promociones
+FOR EACH ROW
+BEGIN
+    IF :NEW.fecha_fin < TRUNC(SYSDATE) THEN
+        UPDATE Promociones
+        SET estado = 'Expirada'
+        WHERE id_promocion = :NEW.id_promocion;
+    END IF;
+END;
+
+--Trigger que verifica si un local ya tiene un número máximo de 10 fotos
+CREATE OR REPLACE TRIGGER trg_limitar_fotos_por_local
+BEFORE INSERT ON Fotos
+FOR EACH ROW
+DECLARE
+    cantidad_fotos NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO cantidad_fotos
+    FROM Fotos
+    WHERE id_local = :NEW.id_local;
+
+    IF cantidad_fotos >= 10 THEN
+        RAISE_APPLICATION_ERROR(-20006, 'Se ha alcanzado el límite de 10 fotos por local.');
+    END IF;
+END;
+
+--Trigger para restringir la modificación de la hora de reserva si la fecha es en el pasado
+CREATE OR REPLACE TRIGGER trg_restringir_modificacion_hora_reserva
+BEFORE UPDATE ON Reservas
+FOR EACH ROW
+BEGIN
+    IF :NEW.fecha < TRUNC(SYSDATE) AND :OLD.fecha < TRUNC(SYSDATE) THEN
+        RAISE_APPLICATION_ERROR(-20008, 'No se puede modificar la hora de una reserva para una fecha que ya ha pasado.');
+    END IF;
+END;
+
+

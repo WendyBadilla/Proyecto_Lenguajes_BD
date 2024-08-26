@@ -18,7 +18,7 @@ import oracle.jdbc.OracleTypes;
 public class ReservaServiceImpl implements ReservaService {
 
     @Override
-    public void agregarReserva(Reserva reserva) {
+    public void agregarReserva(Reserva reserva){
 
         String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
         String user = "C##eataway";
@@ -42,8 +42,12 @@ public class ReservaServiceImpl implements ReservaService {
                 System.out.println("Stored procedure de creacion ejecutado exitosamente.");
             }
         } catch (SQLException e) {
-            System.out.println("Error detected");
-            e.printStackTrace();
+            if (e.getErrorCode() == 20001) { 
+                System.out.println("Error de reserva: La fecha no puede ser pasada.");
+            } else {
+                System.out.println("Error detectado");
+                e.printStackTrace();
+            }
         }
 
     }
@@ -182,8 +186,12 @@ public class ReservaServiceImpl implements ReservaService {
                 System.out.println("Stored procedure executed successfully.");
             }
         } catch (SQLException e) {
-            System.out.println("Error detected");
-            e.printStackTrace();
+            if (e.getErrorCode() == 20008) {
+                System.out.println("No se puede modificar la hora de una reserva para una fecha que ya ha pasado.");               
+            } else {
+                System.out.println("Error detectado");
+                e.printStackTrace();
+            }
         }   
     }
 }
